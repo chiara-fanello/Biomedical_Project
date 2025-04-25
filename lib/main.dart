@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'mode/loginprovider.dart';
-import 'screens/loginpage.dart';
+import 'mode/loginProvider.dart';
+import 'screens/loginPage.dart';
 
 void main() {
   runApp(

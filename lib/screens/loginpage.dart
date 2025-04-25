@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../mode/loginprovider.dart';
-import 'homepage.dart';
+import '../mode/loginProvider.dart';
+import 'mainPage.dart';
 
 class LoginPage extends StatelessWidget {
   final TextEditingController usernameController = TextEditingController();
@@ -85,7 +85,7 @@ class LoginPage extends StatelessWidget {
                               Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => HomePage(),
+                                  builder: (context) => MainPage(),
                                 ),
                               );
                             }
