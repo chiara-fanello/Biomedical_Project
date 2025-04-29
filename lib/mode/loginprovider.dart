@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 class LoginProvider with ChangeNotifier {
-  String _username = 'fjUj9CGlJ5';
-  String _password = '12345678!';
+  String _username = 'user';
+  String _password = 'pass';
   String _usernameInsert = '';
   String _passwordInsert = '';
   String? _errorMessage;

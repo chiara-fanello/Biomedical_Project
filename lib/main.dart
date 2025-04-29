@@ -1,11 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'mode/loginProvider.dart';
-import 'screens/loginPage.dart';
+import 'mode/loginprovider.dart';
+import 'mode/obiettivi.dart';
+import 'screens/loginpage.dart';
 
 void main() {
   runApp(
-    ChangeNotifierProvider(create: (_) => LoginProvider(), child: MyApp()),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => LoginProvider()),
+        ChangeNotifierProvider(
+          create: (context) => ObiettiviProvider(),
+        ), // <--- aggiunto
+      ],
+      child: MyApp(),
+    ),
   );
 }
 
