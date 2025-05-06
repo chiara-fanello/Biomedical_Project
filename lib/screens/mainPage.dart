@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'homePage.dart';
 import 'mapPage.dart';
-import 'profilePage.dart';
+import 'profile/profilePage.dart';
 import 'trophyPage.dart';
 
 class MainPage extends StatefulWidget {
@@ -58,7 +58,6 @@ class _MainPageState extends State<MainPage> {
             activeIcon: Icon(Icons.person),
             label: 'Profile',
           ),
-          
         ],
       ),
     );
