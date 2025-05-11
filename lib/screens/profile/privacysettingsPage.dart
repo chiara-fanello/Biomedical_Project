@@ -13,8 +13,8 @@ class _PrivacySettingsPageState extends State<PrivacySettingsPage> {
     return Scaffold(
       appBar: AppBar(title: Text('Privacy')),
       body: SwitchListTile(
-        title: Text('Profilo privato'),
-        subtitle: Text('Solo gli amici possono vedere le tue attività'),
+        title: Text('Private profile'),
+        subtitle: Text('Only friends can see your activities'),
         value: isPrivate,
         onChanged: (value) {
           setState(() {

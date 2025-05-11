@@ -4,25 +4,21 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 class TrophyPage extends StatelessWidget {
   final List<Trophy> trophies = [
-    Trophy(name: "Primo giro in bici", icon: "bicycle-solid.svg", progress: 1),
+    Trophy(name: "First bike ride", icon: "bicycle-solid.svg", progress: 1),
     Trophy(
-      name: "10.000 passi",
+      name: "10,000 steps",
       icon: "person-walking-solid.svg",
       progress: 12,
     ),
     Trophy(
-      name: "Visitatore culturale",
+      name: "Cultural visitor",
       icon: "landmark-dome-solid.svg",
       progress: 4,
     ),
-    Trophy(
-      name: "Camminatore urbano",
-      icon: "person-walking-solid.svg",
-      progress: 9,
-    ),
+    Trophy(name: "Urban walker", icon: "person-walking-solid.svg", progress: 9),
     Trophy(name: "Green Hero", icon: "leaf-solid.svg", progress: 30),
-    Trophy(name: "Esploratore locale", icon: "tree-solid.svg", progress: 55),
-  ];
+    Trophy(name: "Local explorer", icon: "tree-solid.svg", progress: 55),
+  ]; //NEED TO BE REVALUATED <----
 
   @override
   Widget build(BuildContext context) {
@@ -37,10 +33,10 @@ class TrophyPage extends StatelessWidget {
         child: GridView.builder(
           itemCount: trophies.length,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2, // Più spazio per ogni trofeo
+            crossAxisCount: 2,
             mainAxisSpacing: 24,
             crossAxisSpacing: 24,
-            childAspectRatio: 0.9, // Migliora proporzioni verticali
+            childAspectRatio: 0.9,
           ),
           itemBuilder: (context, index) {
             final trophy = trophies[index];

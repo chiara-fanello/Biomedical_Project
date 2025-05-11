@@ -10,7 +10,7 @@ class AccountSettingsPage extends StatelessWidget {
     String password = '';
 
     return Scaffold(
-      appBar: AppBar(title: Text('Impostazioni Account')),
+      appBar: AppBar(title: Text('Account Settings')),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Form(
@@ -18,7 +18,7 @@ class AccountSettingsPage extends StatelessWidget {
           child: Column(
             children: [
               TextFormField(
-                decoration: InputDecoration(labelText: 'Nome completo'),
+                decoration: InputDecoration(labelText: 'Name'),
                 onSaved: (value) => name = value ?? '',
               ),
               const SizedBox(height: 16),
@@ -36,12 +36,11 @@ class AccountSettingsPage extends StatelessWidget {
               ElevatedButton(
                 onPressed: () {
                   _formKey.currentState?.save();
-                  // Salva i dati (da implementare)
+                  // Saving data to be implemented
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Informazioni aggiornate')),
-                  );
+                    SnackBar(content: Text('Updated information')));
                 },
-                child: Text('Salva modifiche'),
+                child: Text('Save changes'),
               ),
             ],
           ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../mode/loginprovider.dart';
+import '../mode/loginProvider.dart';
 import 'mainPage.dart';
 
 class LoginPage extends StatelessWidget {
@@ -25,7 +25,7 @@ class LoginPage extends StatelessWidget {
               Icon(Icons.lock_outline, size: 80, color: theme.primaryColor),
               const SizedBox(height: 20),
               Text(
-                'Benvenuto!',
+                'Welcome!',
                 style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
@@ -34,7 +34,7 @@ class LoginPage extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               Text(
-                'Accedi al tuo account',
+                'Log into your account',
                 style: TextStyle(fontSize: 16, color: Colors.grey[600]),
               ),
               const SizedBox(height: 30),

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import '../utils/serverRequest.dart';
 
 class LoginProvider with ChangeNotifier {
-  String _username = 'user';
-  String _password = 'pass';
   String _usernameInsert = '';
   String _passwordInsert = '';
   String? _errorMessage;
@@ -11,32 +10,44 @@ class LoginProvider with ChangeNotifier {
   bool get loading => _loading;
   String? get errorMessage => _errorMessage;
 
+  // Set username
   void setUsername(String value) {
     _usernameInsert = value;
-    _errorMessage = null; // reset errore
+    _errorMessage = null; // error reset
     notifyListeners();
   }
 
+  // Set password
   void setPassword(String value) {
     _passwordInsert = value;
-    _errorMessage = null; // reset errore
+    _errorMessage = null; // error reset
     notifyListeners();
   }
 
+  // effettua il login usando il server
   Future<bool> login() async {
     _loading = true;
     notifyListeners();
-    await Future.delayed(Duration(seconds: 2));
-    if (_username == _usernameInsert && _password == _passwordInsert) {
-      _loading = false;
-      _errorMessage = null;
-      notifyListeners();
-      return true;
-    } else {
-      _loading = false;
-      _errorMessage = 'Password o Username errati';
-      notifyListeners();
-      return false;
-    }
+
+    final success = await ServerRequest.login(
+      _usernameInsert,
+      _passwordInsert,
+    );
+
+    _loading = false;
+    _errorMessage = success ? null : 'Wrong username or password\n    Check also server status ';
+    notifyListeners();
+
+    return success;
+  }
+
+  // Logout
+  Future<void> logout() async {
+    await ServerRequest.logout();
+    _usernameInsert = '';
+    _passwordInsert = '';
+    _errorMessage = null;
+    notifyListeners();
   }
 }
+

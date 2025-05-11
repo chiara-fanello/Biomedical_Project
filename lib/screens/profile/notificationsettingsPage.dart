@@ -14,8 +14,8 @@ class _NotificationsSettingsPageState extends State<NotificationsSettingsPage> {
 
   final List<String> alertTypes = [
     'Banner',
-    'Centro Notifiche',
-    'Blocco Schermo',
+    'Notifications center',
+    'Screen lock',
   ];
   final List<String> notificationSounds = [
     'Tri-tone',
@@ -31,22 +31,22 @@ class _NotificationsSettingsPageState extends State<NotificationsSettingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Notifiche')),
+      appBar: AppBar(title: Text('Notifications')),
       body: ListView(
         children: [
           SwitchListTile(
-            title: Text('Notifiche via email'),
+            title: Text('Notify via email'),
             value: emailNotif,
             onChanged: (val) => setState(() => emailNotif = val),
           ),
           SwitchListTile(
-            title: Text('Notifiche push'),
+            title: Text('Push-notifications'),
             value: pushNotif,
             onChanged: (val) => setState(() => pushNotif = val),
           ),
           Divider(),
           ListTile(
-            title: Text('Tipologia Avviso'),
+            title: Text('Alert type'),
             subtitle: Text(selectedAlertType),
             trailing: Icon(Icons.arrow_drop_down),
             onTap: () => _selectAlertType(context),
@@ -55,7 +55,7 @@ class _NotificationsSettingsPageState extends State<NotificationsSettingsPage> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
             child: Text(
-              'Suono Notifica',
+              'Alert sound',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
           ),

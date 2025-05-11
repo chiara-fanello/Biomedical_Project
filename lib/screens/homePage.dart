@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../mode/obiettivi.dart';
+import '../mode/objectives.dart';
 import 'package:provider/provider.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
@@ -9,7 +9,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Benvenuto!')),
+      appBar: AppBar(title: Text('Welcome!')),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -19,7 +19,7 @@ class HomePage extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Text(
-                'I tuoi progressi di oggi',
+                "Your today's progess",
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
@@ -39,19 +39,19 @@ class HomePage extends StatelessWidget {
                     context,
                     percent: 0.7,
                     color: Colors.deepPurple,
-                    label: "Movimento",
+                    label: "Movement",
                   ),
                   _buildRing(
                     context,
                     percent: 0.5,
                     color: Colors.blueAccent,
-                    label: "Allenamento",
+                    label: "Workout",
                   ),
                   _buildRing(
                     context,
                     percent: 0.3,
                     color: Colors.green,
-                    label: "Pausa",
+                    label: "Rest",
                   ),
                 ],
               ),
@@ -62,7 +62,7 @@ class HomePage extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Text(
-                'I tuoi obiettivi di oggi:',
+                "Today's goals:",
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
@@ -86,12 +86,12 @@ class HomePage extends StatelessWidget {
                   ),
                   child: Consumer<ObiettiviProvider>(
                     builder: (context, provider, child) {
-                      if (provider.obiettivi.isEmpty) {
+                      if (provider.objectives.isEmpty) {
                         return Center(
                           child: Padding(
                             padding: const EdgeInsets.all(24.0),
                             child: Text(
-                              'Nessun obiettivo per oggi!',
+                              "No goals today! Let's rest...",
                               style: TextStyle(
                                 color: Colors.grey[600],
                                 fontSize: 16,
@@ -103,7 +103,7 @@ class HomePage extends StatelessWidget {
                       return ListView.separated(
                         shrinkWrap: true,
                         physics: NeverScrollableScrollPhysics(),
-                        itemCount: provider.obiettivi.length,
+                        itemCount: provider.objectives.length,
                         separatorBuilder:
                             (context, index) => Divider(
                               color: Colors.grey[300],
@@ -111,27 +111,27 @@ class HomePage extends StatelessWidget {
                               height: 1,
                             ),
                         itemBuilder: (context, index) {
-                          final obiettivo = provider.obiettivi[index];
+                          final obiettivo = provider.objectives[index];
                           return CheckboxListTile(
                             contentPadding: const EdgeInsets.symmetric(
                               horizontal: 8.0,
                             ),
                             controlAffinity: ListTileControlAffinity.leading,
                             title: Text(
-                              obiettivo.titolo,
+                              obiettivo.title,
                               style: TextStyle(
                                 fontSize: 18,
                                 decoration:
-                                    obiettivo.completato
+                                    obiettivo.completed
                                         ? TextDecoration.lineThrough
                                         : TextDecoration.none,
                                 color:
-                                    obiettivo.completato
+                                    obiettivo.completed
                                         ? Colors.grey
                                         : Colors.black,
                               ),
                             ),
-                            value: obiettivo.completato,
+                            value: obiettivo.completed,
                             onChanged: (value) {
                               provider.toggleCompleted(index);
                             },
@@ -166,7 +166,7 @@ class HomePage extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Completa i tuoi obiettivi!',
+                      "Reach your today's goals",
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -175,7 +175,7 @@ class HomePage extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'Raggiungi i tuoi traguardi per ottenere coupon esclusivi per musei e teatri!',
+                      'Reach your goals to get exclusive coupons for museums and theaters!',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 14,

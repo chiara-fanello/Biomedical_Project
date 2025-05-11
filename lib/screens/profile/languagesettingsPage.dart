@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
 class LanguageSettingsPage extends StatelessWidget {
-  final List<String> languages = ['Italiano', 'Inglese', 'Spagnolo'];
+  final List<String> languages = ['Italiano', 'English', 'Español'];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Lingua')),
+      appBar: AppBar(title: Text('Language')),
       body: ListView.builder(
         itemCount: languages.length,
         itemBuilder: (context, index) {
@@ -16,7 +16,7 @@ class LanguageSettingsPage extends StatelessWidget {
               // Imposta lingua
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text('Lingua impostata su ${languages[index]}'),
+                  content: Text('Now your language is ${languages[index]}'),
                 ),
               );
             },

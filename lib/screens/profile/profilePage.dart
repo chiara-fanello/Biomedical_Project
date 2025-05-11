@@ -3,6 +3,9 @@ import 'accountsettingsPage.dart';
 import 'privacysettingsPage.dart';
 import 'notificationsettingsPage.dart';
 import 'languagesettingsPage.dart';
+import '../loginPage.dart';
+import '../../mode/loginProvider.dart';
+import 'package:provider/provider.dart';
 
 class ProfilePage extends StatelessWidget {
   @override
@@ -10,7 +13,7 @@ class ProfilePage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        title: Text('Profilo'),
+        title: Text('Profile'),
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
         elevation: 0,
@@ -23,7 +26,7 @@ class ProfilePage extends StatelessWidget {
           _buildSettingsOption(
             icon: Icons.person,
             title: 'Account',
-            subtitle: 'Modifica informazioni personali',
+            subtitle: 'Change personal information',
             onTap: () {
               Navigator.push(
                 context,
@@ -34,7 +37,7 @@ class ProfilePage extends StatelessWidget {
           _buildSettingsOption(
             icon: Icons.lock,
             title: 'Privacy',
-            subtitle: 'Gestisci la privacy',
+            subtitle: 'Manage privacy options',
             onTap: () {
               Navigator.push(
                 context,
@@ -44,8 +47,8 @@ class ProfilePage extends StatelessWidget {
           ),
           _buildSettingsOption(
             icon: Icons.notifications,
-            title: 'Notifiche',
-            subtitle: 'Preferenze notifiche',
+            title: 'Notifications',
+            subtitle: "Alerts' preferences",
             onTap: () {
               Navigator.push(
                 context,
@@ -55,8 +58,8 @@ class ProfilePage extends StatelessWidget {
           ),
           _buildSettingsOption(
             icon: Icons.language,
-            title: 'Lingua',
-            subtitle: 'Cambia lingua',
+            title: 'Language',
+            subtitle: 'Choose language',
             onTap: () {
               Navigator.push(
                 context,
@@ -67,12 +70,13 @@ class ProfilePage extends StatelessWidget {
           _buildSettingsOption(
             icon: Icons.logout,
             title: 'Logout',
-            subtitle: 'Esci dall\'account',
-            onTap: () {
+            subtitle: 'Exit from your account',
+            onTap: () async {
               // logout logic
-              Navigator.of(context).popUntil(
-                (route) => route.isFirst,
-              ); // semplice ritorno alla LoginPage
+              await Provider.of<LoginProvider>(context, listen: false).logout();
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => LoginPage()),);
             },
           ),
         ],
@@ -91,16 +95,16 @@ class ProfilePage extends StatelessWidget {
         children: [
           CircleAvatar(
             radius: 40,
-            backgroundImage: AssetImage('assets/avatar.jpg'),
+            backgroundImage: AssetImage('assets/images/avatar.png'),
           ),
           const SizedBox(height: 12),
           Text(
-            'Mario Rossi',
+            'Debuggers Anonimi',
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 4),
           Text(
-            'mario.rossi@email.com',
+            'debuggersanonimi@email.com',
             style: TextStyle(color: Colors.grey[600]),
           ),
         ],
