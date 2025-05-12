@@ -6,7 +6,7 @@ class Objective {
   Objective(this.title, {this.completed= false});
 }
 
-class ObiettiviProvider with ChangeNotifier {
+class ObjectivesProvider with ChangeNotifier {
   List<Objective> _objectives = [
     Objective('Take 8000 steps'),
     Objective('Rent a bike'),

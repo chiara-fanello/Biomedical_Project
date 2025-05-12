@@ -84,7 +84,7 @@ class HomePage extends StatelessWidget {
                     vertical: 16,
                     horizontal: 8,
                   ),
-                  child: Consumer<ObiettiviProvider>(
+                  child: Consumer<ObjectivesProvider>(
                     builder: (context, provider, child) {
                       if (provider.objectives.isEmpty) {
                         return Center(

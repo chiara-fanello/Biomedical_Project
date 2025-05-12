@@ -9,7 +9,7 @@ void main() {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => LoginProvider()),
-        ChangeNotifierProvider(create: (_) => ObiettiviProvider()),
+        ChangeNotifierProvider(create: (_) => ObjectivesProvider()),
       ],
       child: MyApp(),
     ),
