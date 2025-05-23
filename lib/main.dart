@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'mode/loginProvider.dart';
-import 'mode/objectives.dart';
+import 'providers/loginProvider.dart';
+import 'providers/objectives.dart';
 import 'screens/loginPage.dart';
 
 void main() {

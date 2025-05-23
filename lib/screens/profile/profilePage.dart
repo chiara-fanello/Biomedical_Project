@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'accountsettingsPage.dart';
-import 'privacysettingsPage.dart';
 import 'notificationsettingsPage.dart';
-import 'languagesettingsPage.dart';
 import '../loginPage.dart';
-import '../../mode/loginProvider.dart';
+import '../../providers/loginProvider.dart';
 import 'package:provider/provider.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -35,17 +33,6 @@ class ProfilePage extends StatelessWidget {
             },
           ),
           _buildSettingsOption(
-            icon: Icons.lock,
-            title: 'Privacy',
-            subtitle: 'Manage privacy options',
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => PrivacySettingsPage()),
-              );
-            },
-          ),
-          _buildSettingsOption(
             icon: Icons.notifications,
             title: 'Notifications',
             subtitle: "Alerts' preferences",
@@ -53,17 +40,6 @@ class ProfilePage extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (_) => NotificationsSettingsPage()),
-              );
-            },
-          ),
-          _buildSettingsOption(
-            icon: Icons.language,
-            title: 'Language',
-            subtitle: 'Choose language',
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => LanguageSettingsPage()),
               );
             },
           ),

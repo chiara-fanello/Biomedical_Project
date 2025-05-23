@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'homePage.dart';
-import 'mapPage.dart';
+import 'lecturesPage.dart';
 import 'profile/profilePage.dart';
 import 'trophyPage.dart';
 
