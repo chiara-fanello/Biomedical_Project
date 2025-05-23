@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
+import 'dart:io';
 
 
 class ImpactRequest{
@@ -16,10 +18,13 @@ class ImpactRequest{
   static const String _accessKey = 'access';
   static const String _refreshKey = 'refresh';
 
-  //per semplicità non siamo interessati a dare l'utente o a usare più di un codice di risposta
-  //basta solo sapere se è 200 o meno
+  static String patientUsername = 'Jpefaq6m58';
+  static String stepsEndpoint = 'data/v1/steps/patients/';
 
-  //LOGIN, manda username e password al server, mette dentro sp access e refresh token
+  //to be simple as possible we are not interested in giving the user or using more than one response code
+  //just need to know if it is 200 or not
+
+  //LOGIN, send username e password to server, store in sp access and refresh token
   static Future<bool> login(String username, String password) async {
     final url = ImpactRequest.baseUrl + ImpactRequest.tokenEndpoint;
     final body = {
@@ -28,7 +33,7 @@ class ImpactRequest{
     };
 
     final response = await http.post(Uri.parse(url), body: body);
-    //restituisce solo se è andato bene o male 
+    //return only if successful or not 
     if (response.statusCode == 200) {
       final decoded = jsonDecode(response.body);
       final sp = await SharedPreferences.getInstance();
@@ -40,28 +45,28 @@ class ImpactRequest{
     return false;
   }
 
-  // ritorna l'access token, se serve
+  //return access token, if needed
   static Future<String?> getAccessToken() async {
     final sp = await SharedPreferences.getInstance();
     return sp.getString(_accessKey);
   }
 
-  // ritorna il refresh token, se serve
+  //return refresh token, if needed
   static Future<String?> getRefreshToken() async {
     final sp = await SharedPreferences.getInstance();
     return sp.getString(_refreshKey);
   }
 
-  //AGGIORNAMENTO TOKEN
+  //UPDATE TOKEN
   static Future<bool> refreshTokens() async {
     final sp = await SharedPreferences.getInstance();
     final refresh = sp.getString(_refreshKey);
-    //se non esiste il refresh inutile proseguire
+    //if no existing token, don't continue
     if (refresh == null) return false;
 
     final url = ImpactRequest.baseUrl + ImpactRequest.refreshEndpoint;
     final response = await http.post(Uri.parse(url), body: {'refresh': refresh});
-    //se tutto va bene si prosegue con l'aggiornamento e restituisce vero
+    //if it's ok, update tokens and return true
     if (response.statusCode == 200) {
       final decoded = jsonDecode(response.body);
       await sp.setString(_accessKey, decoded['access']);
@@ -76,10 +81,10 @@ class ImpactRequest{
   static Future<void> logout() async {
     final sp = await SharedPreferences.getInstance();
     await sp.remove(_accessKey);
-    await sp.remove(_refreshKey); //rimuovo solo i token
+    await sp.remove(_refreshKey); //only remove tokens
   }
 
-  //PING AL SERVER, se serve
+  //PING, if needed
   static Future<bool> isServerUp() async {
     final url = ImpactRequest.baseUrl + ImpactRequest.pingEndpoint;
     try {
@@ -88,6 +93,38 @@ class ImpactRequest{
     } catch (_) {
       return false;
     }
+  }
+
+  //FETCH STEP DATA DAY
+  static Future<dynamic> fetchStepDataDay(String day) async {
+
+    //Get the stored access token (Note that this code does not work if the tokens are null)
+    final sp = await SharedPreferences.getInstance();
+    var access = sp.getString('access');
+
+    //If access token is expired, refresh it
+    if(JwtDecoder.isExpired(access!)){
+      await ImpactRequest.refreshTokens();
+      access = sp.getString('access');
+    }//if
+
+    //Create the (representative) request
+    final url = ImpactRequest.baseUrl + ImpactRequest.stepsEndpoint + ImpactRequest.patientUsername + '/day/$day/';
+    final headers = {HttpHeaders.authorizationHeader: 'Bearer $access'};
+
+    //Get the response
+    print('Calling: $url');
+    final response = await http.get(Uri.parse(url), headers: headers);
+    
+    //if OK parse the response, otherwise return null
+    var result = null;
+    if (response.statusCode == 200) {
+      result = jsonDecode(response.body);
+    } //if
+
+    //Return the result
+    return result;
+
   }
 
 }//ImpactRequest
