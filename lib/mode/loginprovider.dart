@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../utils/serverRequest.dart';
+import '../services/impact.dart';
 
 class LoginProvider with ChangeNotifier {
   String _usernameInsert = '';
@@ -29,7 +29,7 @@ class LoginProvider with ChangeNotifier {
     _loading = true;
     notifyListeners();
 
-    final success = await ServerRequest.login(
+    final success = await ImpactRequest.login(
       _usernameInsert,
       _passwordInsert,
     );
@@ -43,7 +43,7 @@ class LoginProvider with ChangeNotifier {
 
   // Logout
   Future<void> logout() async {
-    await ServerRequest.logout();
+    await ImpactRequest.logout();
     _usernameInsert = '';
     _passwordInsert = '';
     _errorMessage = null;
