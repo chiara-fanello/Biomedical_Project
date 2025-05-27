@@ -173,13 +173,13 @@ Future<List<List<dynamic>>> loadCsvData() async {
                 child: Column(
                   children: [
                     Icon(
-                      Icons.card_giftcard,
+                      Icons.question_mark_rounded,
                       size: 40,
                       color: Colors.deepPurple,
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      "Do you know...",
+                      "DO YOU KNOW...??",
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -187,9 +187,7 @@ Future<List<List<dynamic>>> loadCsvData() async {
                       ),
                     ),
                     const SizedBox(height: 4),
-                
-                    // qua
-
+                    
                     FutureBuilder<List<List<dynamic>>>(
                       future: loadCsvData(),
                       builder: (context, snapshot) {
