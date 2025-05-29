@@ -21,7 +21,7 @@ import 'lessons/lesson7.dart';
 import 'lessons/lesson8.dart';
 import 'lessons/lesson9.dart';
 
-class Challangepage extends StatelessWidget{
+class Challengepage extends StatelessWidget{
 
   final int active_lesson = 0;
 

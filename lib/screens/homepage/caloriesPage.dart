@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
 
-class MapPage extends StatelessWidget {
+class CaloriesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('WIP'),
+        title: const Text('CALORIES'),
         centerTitle: true,
       ),
       body: Center(

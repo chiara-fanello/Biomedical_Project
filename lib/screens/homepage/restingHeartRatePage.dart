@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../provider/rhrDataProvider.dart'; // Assicurati che il path sia corretto
+import '../../provider/rhrDataProvider.dart'; // Assicurati che il path sia corretto
 import 'package:fl_chart/fl_chart.dart';
 
 class RestingHeartRatePage extends StatefulWidget {

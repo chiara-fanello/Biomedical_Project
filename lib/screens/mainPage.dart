@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/screens/challangePage.dart';
-import 'homePage.dart';
-import 'lecturesPage.dart';
+import 'package:flutter_application_1/screens/challengePage.dart';
+import 'homepage/homePage.dart';
+import 'challengePage.dart';
 import 'profile/profilePage.dart';
 import 'trophyPage.dart';
 
@@ -17,7 +17,7 @@ class _MainPageState extends State<MainPage> {
 
   final List<Widget> _pages = [
     HomePage(),
-    Challangepage(),
+    Challengepage(),
     TrophyPage(),
     ProfilePage(),
   ];
@@ -47,7 +47,7 @@ class _MainPageState extends State<MainPage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.sports_handball_outlined),
             activeIcon: Icon(Icons.map),
-            label: 'Challange',
+            label: 'Challenge',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.emoji_events_outlined),

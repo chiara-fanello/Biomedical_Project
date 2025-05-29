@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import '../services/impact.dart';
-import '../models/stepData.dart';
+import '../models/stepdata.dart';
 
-class DataProvider extends ChangeNotifier {
+class StepDataProvider extends ChangeNotifier {
 
   // ------------ STEP DATA ------------
 
@@ -11,17 +11,14 @@ class DataProvider extends ChangeNotifier {
   // FETCH STEP DATA DAY
   void fetchStepData(String day) async {
 
-    //Get the response
     final data = await ImpactRequest.fetchStepDataDay(day);
 
-    //if OK parse the response adding all the elements to the list, otherwise do nothing
     if (data != null) {
       for (var i = 0; i < data['data']['data'].length; i++) {
         stepData.add(
             StepData.fromJson(data['data']['date'], data['data']['data'][i]));
       } //for
 
-      //remember to notify the listeners
       notifyListeners();
     }//if
 
@@ -30,10 +27,9 @@ class DataProvider extends ChangeNotifier {
   // FETCH STEP DATA RANGE
   void fetchStepDataRange(String startDate, String endDate) async {
 
-    // Get the response
+    
     final data = await ImpactRequest.fetchStepDataRange(startDate, endDate);
 
-    // if OK parse the response and add all elements to the list
     if (data != null) {
       for (var i = 0; i < data['data']['data'].length; i++) {
         final dayData = data['data']['data'][i];
@@ -75,13 +71,16 @@ class DataProvider extends ChangeNotifier {
 Future<void> fetchWeekNumSteps() async {
     final data = await ImpactRequest.fetchStepDataRange("2025-05-19", "2025-05-25");
 
+    print('DATA: $data'); 
+
     if (data != null && data['data'] != null) {
       int total = 0;
-      for (var dayData in data['data']['data']) {
+      for (var dayData in data['data']) {
         for (var entry in dayData['data']) {
           total += int.tryParse(entry['value'].toString()) ?? 0;
         }
-      }
+      }  
+
       totalStepsWeek = total;
     } else {
       totalStepsWeek = 0;

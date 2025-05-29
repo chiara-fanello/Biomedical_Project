@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
+import 'provider/loginprovider.dart';
 import 'provider/sleepDataProvider.dart';
+import 'provider/stepDataProvider.dart';
 import 'package:provider/provider.dart';
 import 'provider/objectives.dart';
-import 'screens/homePage.dart';
+import 'screens/homepage/homePage.dart';
 import 'provider/rhrDataProvider.dart';
 
 void main() {
   runApp(
     MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => LoginProvider()),
         ChangeNotifierProvider(create: (_) => SleepDataProvider()),
         ChangeNotifierProvider(create: (_) => RestingHeartRateProvider()),
+        ChangeNotifierProvider(create: (_) => StepDataProvider())
       ],
       child: MyApp(),
     ),

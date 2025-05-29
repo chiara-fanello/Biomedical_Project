@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
-import '../provider/sleepDataProvider.dart';
-import '../models/sleepChartWidget.dart';
-import '../models/weeklySleepChart.dart';
+import '../../provider/sleepDataProvider.dart';
+import '../../models/sleepChartWidget.dart';
+import '../../models/weeklySleepChart.dart';
 
 class SleepPage extends StatefulWidget {
   final String day;
