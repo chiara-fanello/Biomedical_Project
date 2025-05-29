@@ -3,7 +3,7 @@ import '../providers/objectives.dart';
 import 'package:provider/provider.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'dart:math';
-import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter/services.dart';
 import 'package:csv/csv.dart';
 
 
