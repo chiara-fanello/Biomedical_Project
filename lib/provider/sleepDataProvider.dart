@@ -10,7 +10,7 @@ class SleepDataProvider extends ChangeNotifier {
 
   Future<void> fetchSleepData(String day) async {
     final data = await ImpactRequest.fetchSleepData(day);
-    print('Dati ricevuti per il giorno $day:\n$data');
+    print('Received data for day $day:\n$data');
 
     if (data != null && data['status'] == 'success' && data['data'] != null) {
       final dateStr = data['data']['date'];
@@ -18,25 +18,25 @@ class SleepDataProvider extends ChangeNotifier {
       final inner = data['data']['data'];
 
       if (inner == null) {
-        print('Nessun dato di sonno presente per il giorno $day');
+        print('No sleep data available for day $day');
         return;
       }
 
       try {
-        sleepData.clear(); // Solo i dati giornalieri
+        sleepData.clear(); // Only daily data
         final sleep = SleepData.fromJson(inner, year);
         sleepData.add(sleep);
 
-        // Aggiungi al grafico settimanale
+        // Update the weekly summary chart
         _updateWeeklySummary(sleep);
 
         notifyListeners();
-        print('Dati del sonno caricati correttamente');
+        print('Sleep data loaded successfully');
       } catch (e) {
-        print('Errore nel parsing SleepData: $e');
+        print('Error parsing SleepData: $e');
       }
     } else {
-      print('Risposta non valida o incompleta');
+      print('Invalid or incomplete response');
     }
   }
 
@@ -47,25 +47,25 @@ class SleepDataProvider extends ChangeNotifier {
     final duration = segments.last.end.difference(segments.first.start);
     final label = DateFormat(
       'EEE dd/MM',
-    ).format(data.dateOfSleep); // giorno unico
+    ).format(data.dateOfSleep); // unique day label
 
     final summary = SleepSummary(label: label, duration: duration);
 
-    // Evita duplicati precisi
+    // Avoid exact duplicates
     weeklySummaries.removeWhere((s) => s.label == label);
     weeklySummaries.add(summary);
 
-    // Mantieni massimo 7 elementi (i più recenti)
+    // Keep at most 7 recent entries
     if (weeklySummaries.length > 7) {
       weeklySummaries.removeAt(0);
     }
 
-    // (facoltativo) Ordina per label/data
+    // (Optional) Sort by label/date
     weeklySummaries.sort((a, b) => a.label.compareTo(b.label));
   }
 
   void clearData() {
-    print('Clear solo sleepData, NON weeklySummaries');
+    print('Clearing only sleepData, NOT weeklySummaries');
     sleepData.clear();
     notifyListeners();
   }

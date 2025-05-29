@@ -17,8 +17,8 @@ class WeeklySleepBarChart extends StatelessWidget {
   Widget build(BuildContext context) {
     return BarChart(
       BarChartData(
-        alignment: BarChartAlignment.spaceAround, // distribuisce tutte le barre
-        maxY: 12, // massimo di ore visualizzate (es. 12h)
+        alignment: BarChartAlignment.spaceAround, // Evenly distributes bars
+        maxY: 12, // Maximum hours displayed (e.g. 12h)
         titlesData: FlTitlesData(
           leftTitles: AxisTitles(
             sideTitles: SideTitles(
@@ -26,11 +26,11 @@ class WeeklySleepBarChart extends StatelessWidget {
               reservedSize: 28,
               getTitlesWidget: (value, _) {
                 return Text(
-                  "${value.toInt()}h",
+                  "${value.toInt()}h", // Y-axis labels in hours
                   style: const TextStyle(fontSize: 10),
                 );
               },
-              interval: 2,
+              interval: 2, // Interval every 2 hours
             ),
           ),
           bottomTitles: AxisTitles(
@@ -38,10 +38,11 @@ class WeeklySleepBarChart extends StatelessWidget {
               showTitles: true,
               getTitlesWidget: (value, _) {
                 final index = value.toInt();
-                if (index < 0 || index >= sleepSummaries.length)
-                  return const SizedBox();
+                if (index < 0 || index >= sleepSummaries.length) {
+                  return const SizedBox(); // Hide labels if index is out of range
+                }
                 return Text(
-                  sleepSummaries[index].label,
+                  sleepSummaries[index].label, // e.g., Mon, Tue, etc.
                   style: const TextStyle(fontSize: 10),
                 );
               },
@@ -66,8 +67,8 @@ class WeeklySleepBarChart extends StatelessWidget {
                 ],
               );
             }).toList(),
-        gridData: FlGridData(show: true),
-        borderData: FlBorderData(show: false),
+        gridData: FlGridData(show: false), // Do not show horizontal grid lines
+        borderData: FlBorderData(show: false), // No border around the chart
       ),
     );
   }

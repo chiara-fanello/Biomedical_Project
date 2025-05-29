@@ -1,26 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
-<<<<<<< HEAD
 import 'sleepPage.dart';
 import 'restingHeartRatePage.dart';
-=======
 import 'dart:math';
 import 'package:flutter/services.dart';
 import 'package:csv/csv.dart';
 
->>>>>>> e8901bb6eed54b7742b9532055650d95bdd7fef2
-
 class HomePage extends StatelessWidget {
   HomePage({super.key});
 
-final rand = Random();
-int randRow = 0;
+  final rand = Random();
+  int randRow = 0;
 
-Future<List<List<dynamic>>> loadCsvData() async {
-  final raw = await rootBundle.loadString('assets/DoYouKnow.csv');
-  final data = const CsvToListConverter(fieldDelimiter: ';').convert(raw);
-  return data.toList(); 
-}
+  Future<List<List<dynamic>>> loadCsvData() async {
+    final raw = await rootBundle.loadString('assets/DoYouKnow.csv');
+    final data = const CsvToListConverter(fieldDelimiter: ';').convert(raw);
+    return data.toList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -145,15 +141,17 @@ Future<List<List<dynamic>>> loadCsvData() async {
                       ),
                     ),
                     const SizedBox(height: 4),
-                    
+
                     FutureBuilder<List<List<dynamic>>>(
                       future: loadCsvData(),
                       builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
                           return const CircularProgressIndicator();
                         } else if (snapshot.hasError) {
                           return Text('Errore nel CSV');
-                        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                        } else if (!snapshot.hasData ||
+                            snapshot.data!.isEmpty) {
                           return Text('CSV vuoto');
                         }
 
@@ -165,7 +163,13 @@ Future<List<List<dynamic>>> loadCsvData() async {
 
                         return Column(
                           children: [
-                            Text(frase, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                            Text(
+                              frase,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
                             SizedBox(height: 8),
                             Text(spiegazione, style: TextStyle(fontSize: 14)),
                           ],

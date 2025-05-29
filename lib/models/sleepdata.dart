@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 class SleepData {
   final DateTime dateOfSleep;
   final SleepLevelsSummary levelsSummary;
-  final List<SleepSegment> levelsData; // <-- usa direttamente SleepSegment
+  final List<SleepSegment> levelsData;
 
   SleepData({
     required this.dateOfSleep,
@@ -13,6 +13,8 @@ class SleepData {
 
   factory SleepData.fromJson(Map<String, dynamic> json, String baseDate) {
     List<SleepSegment> levelsData = [];
+
+    // Parse sleep level segments if available
     if (json['levels'] != null && json['levels']['data'] != null) {
       levelsData =
           (json['levels']['data'] as List)
@@ -20,6 +22,7 @@ class SleepData {
               .toList();
     }
 
+    // Parse the date (format: MM-dd) and assume current year
     final dateFormat = DateFormat('MM-dd');
     final parsedDate = dateFormat.parse(json['dateOfSleep']);
     final fullDate = DateTime(
@@ -80,22 +83,25 @@ class SleepSegment {
 
   factory SleepSegment.fromJson(Map<String, dynamic> json) {
     final String level = (json['level'] as String).toLowerCase();
+
+    // Map JSON level string to SleepStage enum
     final SleepStage mappedStage = switch (level) {
       'light' => SleepStage.light,
       'deep' => SleepStage.deep,
       'rem' => SleepStage.rem,
       'wake' => SleepStage.awake,
-      _ => SleepStage.light, // fallback sicuro
+      _ => SleepStage.light, // Safe fallback
     };
 
     final format = DateFormat(
       'MM-dd HH:mm:ss',
-    ); // <-- verifica il formato corretto
+    ); // Make sure this matches your data format
 
     late DateTime start;
     late DateTime end;
 
     try {
+      // Handle both possible data structures
       if (json.containsKey('start') && json.containsKey('end')) {
         start = format.parse(json['start']);
         end = format.parse(json['end']);
@@ -103,16 +109,18 @@ class SleepSegment {
         start = format.parse(json['dateTime']);
         end = start.add(Duration(seconds: json['seconds']));
       } else {
-        throw FormatException('Chiavi mancanti nel JSON');
+        throw FormatException('Missing keys in JSON');
       }
 
       if (end.isBefore(start)) {
-        throw FormatException('Fine prima dell’inizio');
+        throw FormatException('End time is before start time');
       }
 
       return SleepSegment(stage: mappedStage, start: start, end: end);
     } catch (e) {
-      throw FormatException('Errore nel parsing di SleepSegment: $e - $json');
+      // Print detailed error for debugging
+      print('Error parsing SleepSegment: $e\nData: $json');
+      throw FormatException('Error parsing SleepSegment: $e - $json');
     }
   }
 

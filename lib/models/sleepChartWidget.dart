@@ -22,7 +22,7 @@ class SleepBarChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Calcolo tempo totale
+    // Calculate overall sleep time range
     final startTime = segments
         .map((s) => s.start)
         .reduce((a, b) => a.isBefore(b) ? a : b);
@@ -34,7 +34,7 @@ class SleepBarChart extends StatelessWidget {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: SizedBox(
-        width: totalMinutes * 2, // Più lungo = più leggibile
+        width: totalMinutes * 2, // Wider for better readability
         height: 280,
         child: CustomPaint(
           painter: _SleepBarChartPainter(
@@ -80,7 +80,7 @@ class _SleepBarChartPainter extends CustomPainter {
       textDirection: TextDirection.rtl,
     );
 
-    // Etichette Y
+    // Draw Y-axis labels
     for (int i = 0; i < stageOrder.length; i++) {
       final label = SleepBarChart.stageLabels[stageOrder[i]]!;
       textPainter.text = TextSpan(
@@ -94,11 +94,11 @@ class _SleepBarChartPainter extends CustomPainter {
       );
     }
 
-    final xOffset = 60.0; // lascia spazio per le etichette Y
+    final xOffset = 60.0; // Leave space for Y-axis labels
 
     for (var segment in segments) {
       final stageIndex = stageOrder.indexOf(segment.stage);
-      final top = stageIndex * rowHeight + 4; //+ 1;
+      final top = stageIndex * rowHeight + 4;
       final barHeight = rowHeight;
 
       final startMinutes = segment.start.difference(startTime).inMinutes;
@@ -123,7 +123,7 @@ class _SleepBarChartPainter extends CustomPainter {
         Radius.circular(6),
       );
 
-      // Ombra leggera
+      // Light shadow under bar
       canvas.drawShadow(
         Path()..addRRect(rrect),
         Colors.black.withOpacity(0.2),
@@ -131,19 +131,17 @@ class _SleepBarChartPainter extends CustomPainter {
         false,
       );
 
-      // Rettangolo con angoli smussati
+      // Rounded colored bar
       paint.color = stageColors[segment.stage]!.withOpacity(0.9);
       canvas.drawRRect(rrect, paint);
     }
 
-    // Dentro paint(Canvas canvas, Size size)
+    // Draw X-axis time labels
 
     final labelStyle = TextStyle(color: Colors.black, fontSize: 10);
 
-    // Intervallo in minuti (3 ore = 180 minuti)
-    const tickInterval = 45;
+    const tickInterval = 45; // Minutes between labels (e.g. every 45 mins)
 
-    // Calcola quante etichette disegnare
     for (int i = 0; i <= totalMinutes; i += tickInterval) {
       final tickTime = startTime.add(Duration(minutes: i));
       final label =

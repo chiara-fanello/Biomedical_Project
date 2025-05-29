@@ -134,6 +134,7 @@ class ImpactRequest {
     final sp = await SharedPreferences.getInstance();
     var access = sp.getString('access');
 
+    // Refresh token if expired
     if (JwtDecoder.isExpired(access!)) {
       await ImpactRequest.refreshTokens();
       access = sp.getString('access');
@@ -164,6 +165,7 @@ class ImpactRequest {
     final sp = await SharedPreferences.getInstance();
     var access = sp.getString('access');
 
+    // Refresh token if expired
     if (JwtDecoder.isExpired(access!)) {
       await ImpactRequest.refreshTokens();
       access = sp.getString('access');
