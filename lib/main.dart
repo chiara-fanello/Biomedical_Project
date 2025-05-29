@@ -1,21 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/providers/dataProvider.dart';
+import 'provider/sleepDataProvider.dart';
 import 'package:provider/provider.dart';
-import 'providers/loginProvider.dart';
-import 'providers/objectives.dart';
-import 'screens/loginPage.dart';
+import 'provider/objectives.dart';
+import 'screens/homePage.dart';
+import 'provider/rhrDataProvider.dart';
 
 void main() {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => LoginProvider()),
-        ChangeNotifierProvider(create: (_) => ObjectivesProvider()),
-        ChangeNotifierProvider(create: (_) => DataProvider()),
+        ChangeNotifierProvider(create: (_) => SleepDataProvider()),
+        ChangeNotifierProvider(create: (_) => RestingHeartRateProvider()),
       ],
       child: MyApp(),
     ),
-    
   );
 }
 
@@ -49,7 +47,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: LoginPage(),
+      home: HomePage(),
     );
   }
 }

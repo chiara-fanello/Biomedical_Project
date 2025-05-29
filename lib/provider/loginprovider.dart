@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../services/impact.dart';
+import '../services/Impact.dart';
 
 class LoginProvider with ChangeNotifier {
   String _usernameInsert = '';
@@ -29,13 +29,13 @@ class LoginProvider with ChangeNotifier {
     _loading = true;
     notifyListeners();
 
-    final success = await ImpactRequest.login(
-      _usernameInsert,
-      _passwordInsert,
-    );
+    final success = await ImpactRequest.login(_usernameInsert, _passwordInsert);
 
     _loading = false;
-    _errorMessage = success ? null : 'Wrong username or password\n    Check also server status ';
+    _errorMessage =
+        success
+            ? null
+            : 'Wrong username or password\n    Check also server status ';
     notifyListeners();
 
     return success;
@@ -50,4 +50,3 @@ class LoginProvider with ChangeNotifier {
     notifyListeners();
   }
 }
-

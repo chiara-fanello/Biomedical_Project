@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'accountsettingsPage.dart';
 import 'notificationsettingsPage.dart';
 import '../loginPage.dart';
-import '../../providers/loginProvider.dart';
+import '../../provider/loginProvider.dart';
 import 'package:provider/provider.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -52,7 +52,8 @@ class ProfilePage extends StatelessWidget {
               await Provider.of<LoginProvider>(context, listen: false).logout();
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => LoginPage()),);
+                MaterialPageRoute(builder: (context) => LoginPage()),
+              );
             },
           ),
         ],
