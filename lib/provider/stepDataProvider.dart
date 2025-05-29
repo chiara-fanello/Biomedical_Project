@@ -51,27 +51,34 @@ class StepDataProvider extends ChangeNotifier {
   int? totalStepsDay;
 
   Future<void> fetchMonthNumSteps() async {
-    final data = await ImpactRequest.fetchStepDataRange("2025-05-01", "2025-05-25");
+  // 4 fetch settimanali (il server supporta massimo 7 giorni)
+    final data1 = await ImpactRequest.fetchStepDataRange("2025-05-19", "2025-05-25");
+    final data2 = await ImpactRequest.fetchStepDataRange("2025-05-12", "2025-05-18");
+    final data3 = await ImpactRequest.fetchStepDataRange("2025-05-05", "2025-05-11");
+    final data4 = await ImpactRequest.fetchStepDataRange("2025-05-01", "2025-05-04");
 
-    if (data != null && data['data'] != null) {
-      int total = 0;
-      for (var dayData in data['data']['data']) {
-        for (var entry in dayData['data']) {
-          total += int.tryParse(entry['value'].toString()) ?? 0;
-        }
+    final data = [
+      ...(data1?['data'] ?? []),
+      ...(data2?['data'] ?? []),
+      ...(data3?['data'] ?? []),
+      ...(data4?['data'] ?? []),
+    ];
+
+    int total = 0;
+
+    for (var dayData in data) {
+      for (var entry in dayData['data']) {
+        total += int.tryParse(entry['value'].toString()) ?? 0;
       }
-      totalStepsMonth = total;
-    } else {
-      totalStepsMonth = 0;
     }
+
+    totalStepsMonth = total;
 
     notifyListeners();
   }
 
-Future<void> fetchWeekNumSteps() async {
+  Future<void> fetchWeekNumSteps() async {
     final data = await ImpactRequest.fetchStepDataRange("2025-05-19", "2025-05-25");
-
-    print('DATA: $data'); 
 
     if (data != null && data['data'] != null) {
       int total = 0;
