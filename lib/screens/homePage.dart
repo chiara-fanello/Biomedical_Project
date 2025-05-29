@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../providers/objectives.dart';
-import 'package:provider/provider.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'sleepPage.dart';
+import 'restingHeartRatePage.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({super.key});
@@ -9,7 +9,36 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Welcome!')),
+      appBar: AppBar(
+        title: Text('Welcome!'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.bed),
+            tooltip: 'Sleep Data',
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SleepPage(day: '2025-03-27'),
+                ),
+              );
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.monitor_heart), // oppure Icons.favorite
+            tooltip: 'Heart Rate',
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => RestingHeartRatePage(day: '2025-03-20'),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -71,80 +100,6 @@ class HomePage extends StatelessWidget {
               ),
             ),
 
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Card(
-                color: Colors.white,
-                elevation: 3,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 16,
-                    horizontal: 8,
-                  ),
-                  child: Consumer<ObjectivesProvider>(
-                    builder: (context, provider, child) {
-                      if (provider.objectives.isEmpty) {
-                        return Center(
-                          child: Padding(
-                            padding: const EdgeInsets.all(24.0),
-                            child: Text(
-                              "No goals today! Let's rest...",
-                              style: TextStyle(
-                                color: Colors.grey[600],
-                                fontSize: 16,
-                              ),
-                            ),
-                          ),
-                        );
-                      }
-                      return ListView.separated(
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        itemCount: provider.objectives.length,
-                        separatorBuilder:
-                            (context, index) => Divider(
-                              color: Colors.grey[300],
-                              thickness: 1,
-                              height: 1,
-                            ),
-                        itemBuilder: (context, index) {
-                          final obiettivo = provider.objectives[index];
-                          return CheckboxListTile(
-                            contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 8.0,
-                            ),
-                            controlAffinity: ListTileControlAffinity.leading,
-                            title: Text(
-                              obiettivo.title,
-                              style: TextStyle(
-                                fontSize: 18,
-                                decoration:
-                                    obiettivo.completed
-                                        ? TextDecoration.lineThrough
-                                        : TextDecoration.none,
-                                color:
-                                    obiettivo.completed
-                                        ? Colors.grey
-                                        : Colors.black,
-                              ),
-                            ),
-                            value: obiettivo.completed,
-                            onChanged: (value) {
-                              provider.toggleCompleted(index);
-                            },
-                            activeColor: Colors.deepPurple,
-                            checkColor: Colors.white,
-                          );
-                        },
-                      );
-                    },
-                  ),
-                ),
-              ),
-            ),
             Padding(
               padding: const EdgeInsets.symmetric(
                 horizontal: 16.0,

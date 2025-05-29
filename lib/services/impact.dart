@@ -4,14 +4,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'dart:io';
 
-
-class ImpactRequest{
-
+class ImpactRequest {
   static String baseUrl = 'https://impact.dei.unipd.it/bwthw/';
   static String pingEndpoint = 'gate/v1/ping/';
   static String tokenEndpoint = 'gate/v1/token/';
   static String refreshEndpoint = 'gate/v1/refresh/';
-  
+
   //static String username = '<YOUR_USERNAME>';
   //static String password = '<YOUR_PASSWORD>';
 
@@ -20,6 +18,8 @@ class ImpactRequest{
 
   static String patientUsername = 'Jpefaq6m58';
   static String stepsEndpoint = 'data/v1/steps/patients/';
+  static String sleepEndpoint = 'data/v1/sleep/patients/';
+  static String rhrEndpoint = 'data/v1/resting_heart_rate/patients/';
 
   //to be simple as possible we are not interested in giving the user or using more than one response code
   //just need to know if it is 200 or not
@@ -27,13 +27,10 @@ class ImpactRequest{
   //LOGIN, send username e password to server, store in sp access and refresh token
   static Future<bool> login(String username, String password) async {
     final url = ImpactRequest.baseUrl + ImpactRequest.tokenEndpoint;
-    final body = {
-      'username': username,
-      'password': password,
-    };
+    final body = {'username': username, 'password': password};
 
     final response = await http.post(Uri.parse(url), body: body);
-    //return only if successful or not 
+    //return only if successful or not
     if (response.statusCode == 200) {
       final decoded = jsonDecode(response.body);
       final sp = await SharedPreferences.getInstance();
@@ -65,7 +62,10 @@ class ImpactRequest{
     if (refresh == null) return false;
 
     final url = ImpactRequest.baseUrl + ImpactRequest.refreshEndpoint;
-    final response = await http.post(Uri.parse(url), body: {'refresh': refresh});
+    final response = await http.post(
+      Uri.parse(url),
+      body: {'refresh': refresh},
+    );
     //if it's ok, update tokens and return true
     if (response.statusCode == 200) {
       final decoded = jsonDecode(response.body);
@@ -97,25 +97,28 @@ class ImpactRequest{
 
   //FETCH STEP DATA DAY
   static Future<dynamic> fetchStepDataDay(String day) async {
-
     //Get the stored access token (Note that this code does not work if the tokens are null)
     final sp = await SharedPreferences.getInstance();
     var access = sp.getString('access');
 
     //If access token is expired, refresh it
-    if(JwtDecoder.isExpired(access!)){
+    if (JwtDecoder.isExpired(access!)) {
       await ImpactRequest.refreshTokens();
       access = sp.getString('access');
-    }//if
+    } //if
 
     //Create the (representative) request
-    final url = ImpactRequest.baseUrl + ImpactRequest.stepsEndpoint + ImpactRequest.patientUsername + '/day/$day/';
+    final url =
+        ImpactRequest.baseUrl +
+        ImpactRequest.stepsEndpoint +
+        ImpactRequest.patientUsername +
+        '/day/$day/';
     final headers = {HttpHeaders.authorizationHeader: 'Bearer $access'};
 
     //Get the response
     print('Calling: $url');
     final response = await http.get(Uri.parse(url), headers: headers);
-    
+
     //if OK parse the response, otherwise return null
     var result = null;
     if (response.statusCode == 200) {
@@ -124,7 +127,66 @@ class ImpactRequest{
 
     //Return the result
     return result;
-
   }
 
+  // FETCH SLEEP DATA DAY
+  static Future<dynamic> fetchSleepData(String day) async {
+    final sp = await SharedPreferences.getInstance();
+    var access = sp.getString('access');
+
+    if (JwtDecoder.isExpired(access!)) {
+      await ImpactRequest.refreshTokens();
+      access = sp.getString('access');
+    }
+
+    final url =
+        ImpactRequest.baseUrl +
+        sleepEndpoint +
+        ImpactRequest.patientUsername +
+        '/day/$day/';
+    final headers = {HttpHeaders.authorizationHeader: 'Bearer $access'};
+
+    print('Calling: $url');
+    final response = await http.get(Uri.parse(url), headers: headers);
+
+    print('Status code: ${response.statusCode}');
+    print('Response body: ${response.body}');
+
+    var result;
+    if (response.statusCode == 200) {
+      result = jsonDecode(response.body);
+    }
+
+    return result;
+  }
+
+  static Future<dynamic> fetchRestingHeartRateData(String day) async {
+    final sp = await SharedPreferences.getInstance();
+    var access = sp.getString('access');
+
+    if (JwtDecoder.isExpired(access!)) {
+      await ImpactRequest.refreshTokens();
+      access = sp.getString('access');
+    }
+
+    final url =
+        ImpactRequest.baseUrl +
+        rhrEndpoint +
+        ImpactRequest.patientUsername +
+        '/day/$day/';
+    final headers = {HttpHeaders.authorizationHeader: 'Bearer $access'};
+
+    print('Calling: $url');
+    final response = await http.get(Uri.parse(url), headers: headers);
+
+    print('Status code: ${response.statusCode}');
+    print('Response body: ${response.body}');
+
+    var result;
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    }
+
+    return result;
+  }
 }//ImpactRequest
