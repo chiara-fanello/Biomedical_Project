@@ -16,7 +16,7 @@ int randRow = 0;
 Future<List<List<dynamic>>> loadCsvData() async {
   final raw = await rootBundle.loadString('assets/DoYouKnow.csv');
   final data = const CsvToListConverter(fieldDelimiter: ';').convert(raw);
-  return data.toList(); // salta intestazione
+  return data.toList(); 
 }
 
   @override
