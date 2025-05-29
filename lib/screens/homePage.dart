@@ -1,10 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+<<<<<<< HEAD
 import 'sleepPage.dart';
 import 'restingHeartRatePage.dart';
+=======
+import 'dart:math';
+import 'package:flutter/services.dart';
+import 'package:csv/csv.dart';
+
+>>>>>>> e8901bb6eed54b7742b9532055650d95bdd7fef2
 
 class HomePage extends StatelessWidget {
   HomePage({super.key});
+
+final rand = Random();
+int randRow = 0;
+
+Future<List<List<dynamic>>> loadCsvData() async {
+  final raw = await rootBundle.loadString('assets/DoYouKnow.csv');
+  final data = const CsvToListConverter(fieldDelimiter: ';').convert(raw);
+  return data.toList(); 
+}
 
   @override
   Widget build(BuildContext context) {
@@ -115,13 +131,13 @@ class HomePage extends StatelessWidget {
                 child: Column(
                   children: [
                     Icon(
-                      Icons.card_giftcard,
+                      Icons.question_mark_rounded,
                       size: 40,
                       color: Colors.deepPurple,
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      "Reach your today's goals",
+                      "DO YOU KNOW...??",
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -129,13 +145,32 @@ class HomePage extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 4),
-                    Text(
-                      'Reach your goals to get exclusive coupons for museums and theaters!',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.deepPurple[700],
-                      ),
+                    
+                    FutureBuilder<List<List<dynamic>>>(
+                      future: loadCsvData(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return const CircularProgressIndicator();
+                        } else if (snapshot.hasError) {
+                          return Text('Errore nel CSV');
+                        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                          return Text('CSV vuoto');
+                        }
+
+                        final righe = snapshot.data!;
+                        final randomIndex = Random().nextInt(righe.length);
+                        final riga = righe[randomIndex];
+                        final frase = riga[0];
+                        final spiegazione = riga[1];
+
+                        return Column(
+                          children: [
+                            Text(frase, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                            SizedBox(height: 8),
+                            Text(spiegazione, style: TextStyle(fontSize: 14)),
+                          ],
+                        );
+                      },
                     ),
                   ],
                 ),
