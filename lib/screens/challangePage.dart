@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'goalsPage.dart';
 import 'lessons/lesson1.dart';
 import 'lessons/lesson10.dart';
 import 'lessons/lesson11.dart';
