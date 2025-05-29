@@ -29,18 +29,24 @@ class ImpactRequest {
     final url = ImpactRequest.baseUrl + ImpactRequest.tokenEndpoint;
     final body = {'username': username, 'password': password};
 
-    final response = await http.post(Uri.parse(url), body: body);
-    //return only if successful or not
-    if (response.statusCode == 200) {
-      final decoded = jsonDecode(response.body);
-      final sp = await SharedPreferences.getInstance();
-      await sp.setString(_accessKey, decoded['access']);
-      await sp.setString(_refreshKey, decoded['refresh']);
-      return true;
-    }
+    try {
+      final response = await http.post(Uri.parse(url), body: body);
 
-    return false;
+      if (response.statusCode == 200) {
+        final decoded = jsonDecode(response.body);
+        final sp = await SharedPreferences.getInstance();
+        await sp.setString(_accessKey, decoded['access']);
+        await sp.setString(_refreshKey, decoded['refresh']);
+        return true;
+      }
+
+      return false; // login fallito
+    } catch (e) {
+      print('Login error: $e');
+      return false;
+    }
   }
+
 
   //return access token, if needed
   static Future<String?> getAccessToken() async {

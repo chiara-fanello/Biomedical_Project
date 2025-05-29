@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'provider/loginprovider.dart';
+import 'provider/loginProvider.dart';
 import 'provider/sleepDataProvider.dart';
 import 'provider/stepDataProvider.dart';
 import 'package:provider/provider.dart';
 import 'provider/objectives.dart';
+import 'screens/loginPage.dart';
 import 'screens/homepage/homePage.dart';
 import 'provider/rhrDataProvider.dart';
 
@@ -51,7 +52,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: HomePage(),
+      home: LoginPage(),
     );
   }
 }
