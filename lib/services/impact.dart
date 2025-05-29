@@ -18,7 +18,7 @@ class ImpactRequest{
   static const String _accessKey = 'access';
   static const String _refreshKey = 'refresh';
 
-  static String patientUsername = 'Jpefaq6m58';
+  static String patientUsername = 'Jpefaq6m58';  //username to use to extract data, not to access to server
   static String stepsEndpoint = 'data/v1/steps/patients/';
 
   //to be simple as possible we are not interested in giving the user or using more than one response code
@@ -126,5 +126,34 @@ class ImpactRequest{
     return result;
 
   }
+
+  //FETCH STEP DATA RANGE
+  static Future<dynamic> fetchStepDataRange(String startDate, String endDate) async {
+    final sp = await SharedPreferences.getInstance();
+    var access = sp.getString('access');
+
+    if (access == null || JwtDecoder.isExpired(access)) {
+      await ImpactRequest.refreshTokens();
+      access = sp.getString('access');
+    }
+
+    final url = '${ImpactRequest.baseUrl}${ImpactRequest.stepsEndpoint}'
+        '${ImpactRequest.patientUsername}/daterange/start_date/$startDate/end_date/$endDate/';
+
+    final headers = {
+      HttpHeaders.authorizationHeader: 'Bearer $access',
+    };
+
+    print('Calling: $url');
+    final response = await http.get(Uri.parse(url), headers: headers);
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      print('Error ${response.statusCode}: ${response.body}');
+      return null;
+    }
+  }
+
 
 }//ImpactRequest

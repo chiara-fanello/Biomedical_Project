@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/providers/dataProvider.dart';
 import 'package:provider/provider.dart';
 import 'providers/loginProvider.dart';
 import 'providers/objectives.dart';
@@ -10,6 +11,7 @@ void main() {
       providers: [
         ChangeNotifierProvider(create: (_) => LoginProvider()),
         ChangeNotifierProvider(create: (_) => ObjectivesProvider()),
+        ChangeNotifierProvider(create: (_) => DataProvider()),
       ],
       child: MyApp(),
     ),
