@@ -51,9 +51,9 @@ class _StepPageState extends State<StepPage> {
               children: [
                 StepBox(title: 'Daily steps', steps: daySteps),
                 SizedBox(height: 12),
-                StepBox(title: 'Weekly steps', steps: weekSteps),
+                StepBox(title: 'Avg weekly steps', steps: weekSteps),
                 SizedBox(height: 12),
-                StepBox(title: 'Monthly steps', steps: monthSteps),
+                StepBox(title: 'Avg monthly steps', steps: monthSteps),
                 SizedBox(height: 24),
                 Container(
                   padding: EdgeInsets.all(16),

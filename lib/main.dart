@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/provider/caloriesDataProvider.dart';
+import 'package:flutter_application_1/provider/distanceDataProvider.dart';
 import 'provider/loginProvider.dart';
 import 'provider/sleepDataProvider.dart';
 import 'provider/stepDataProvider.dart';
@@ -15,7 +17,9 @@ void main() {
         ChangeNotifierProvider(create: (_) => LoginProvider()),
         ChangeNotifierProvider(create: (_) => SleepDataProvider()),
         ChangeNotifierProvider(create: (_) => RestingHeartRateProvider()),
-        ChangeNotifierProvider(create: (_) => StepDataProvider())
+        ChangeNotifierProvider(create: (_) => StepDataProvider()),
+        ChangeNotifierProvider(create: (_) => CaloriesDataProvider()),
+        ChangeNotifierProvider(create: (_) => DistanceDataProvider())
       ],
       child: MyApp(),
     ),

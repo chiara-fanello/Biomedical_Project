@@ -51,7 +51,6 @@ class StepDataProvider extends ChangeNotifier {
   int? totalStepsDay;
 
   Future<void> fetchMonthNumSteps() async {
-  // 4 fetch settimanali (il server supporta massimo 7 giorni)
     final data1 = await ImpactRequest.fetchStepDataRange("2025-05-19", "2025-05-25");
     final data2 = await ImpactRequest.fetchStepDataRange("2025-05-12", "2025-05-18");
     final data3 = await ImpactRequest.fetchStepDataRange("2025-05-05", "2025-05-11");
@@ -65,14 +64,18 @@ class StepDataProvider extends ChangeNotifier {
     ];
 
     int total = 0;
+    int dayCount = 0;
 
     for (var dayData in data) {
+      int dayTotal = 0;
       for (var entry in dayData['data']) {
-        total += int.tryParse(entry['value'].toString()) ?? 0;
+        dayTotal += int.tryParse(entry['value'].toString()) ?? 0;
       }
+      total += dayTotal;
+      dayCount++;
     }
 
-    totalStepsMonth = total;
+    totalStepsMonth = dayCount > 0 ? (total ~/ dayCount) : 0;
 
     notifyListeners();
   }
@@ -82,13 +85,18 @@ class StepDataProvider extends ChangeNotifier {
 
     if (data != null && data['data'] != null) {
       int total = 0;
-      for (var dayData in data['data']) {
-        for (var entry in dayData['data']) {
-          total += int.tryParse(entry['value'].toString()) ?? 0;
-        }
-      }  
+      int dayCount = 0;
 
-      totalStepsWeek = total;
+      for (var dayData in data['data']) {
+        int dayTotal = 0;
+        for (var entry in dayData['data']) {
+          dayTotal += int.tryParse(entry['value'].toString()) ?? 0;
+        }
+        total += dayTotal;
+        dayCount++;
+      }
+
+      totalStepsWeek = dayCount > 0 ? (total ~/ dayCount) : 0;
     } else {
       totalStepsWeek = 0;
     }
@@ -118,4 +126,4 @@ class StepDataProvider extends ChangeNotifier {
     notifyListeners();
   }//clearData
   
-}//DataProvider
+}//StepDataProvider
