@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/provider/goalsProvider.dart';
+import 'package:flutter_application_1/screens/goalsPage.dart';
 import 'package:provider/provider.dart';
 import 'dart:math';
 import 'package:flutter/services.dart';
@@ -31,7 +33,10 @@ class _HomePageState extends State<HomePage> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (!_initialized) {
-      final stepProvider = Provider.of<StepDataProvider>(context, listen: false);
+      final stepProvider = Provider.of<StepDataProvider>(
+        context,
+        listen: false,
+      );
       stepProvider.fetchDayNumSteps();
       _initialized = true;
     }
@@ -43,7 +48,7 @@ class _HomePageState extends State<HomePage> {
     required Color color,
     required VoidCallback onTap,
   }) {
-    return Expanded(  
+    return Expanded(
       child: InkWell(
         onTap: onTap,
         child: Container(
@@ -83,6 +88,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    int lessons = Provider.of<GoalsProvider>(context).lessons();
     return Scaffold(
       appBar: AppBar(
         title: Text('Welcome!'),
@@ -91,19 +97,28 @@ class _HomePageState extends State<HomePage> {
             icon: Icon(Icons.bed),
             tooltip: 'Sleep Data',
             onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (_) => SleepPage(day: '2025-03-27')));
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => SleepPage(day: '2025-03-27')),
+              );
             },
           ),
           IconButton(
             icon: Icon(Icons.monitor_heart),
             tooltip: 'Heart Rate',
             onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (_) => RestingHeartRatePage(day: '2025-03-20')));
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => RestingHeartRatePage(day: '2025-03-20'),
+                ),
+              );
             },
           ),
         ],
       ),
-      body: SingleChildScrollView(  // Aggiunto SingleChildScrollView
+      body: SingleChildScrollView(
+        // Aggiunto SingleChildScrollView
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -129,10 +144,14 @@ class _HomePageState extends State<HomePage> {
                       children: [
                         _buildDataBox(
                           label: 'Steps',
-                          value: stepProvider.totalStepsDay?.toString() ?? '...',
+                          value:
+                              stepProvider.totalStepsDay?.toString() ?? '...',
                           color: Colors.blue,
                           onTap: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (_) => StepPage()));
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (_) => StepPage()),
+                            );
                           },
                         ),
                         _buildDataBox(
@@ -140,7 +159,12 @@ class _HomePageState extends State<HomePage> {
                           value: '...h',
                           color: Colors.green,
                           onTap: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (_) => SleepPage(day: '2025-05-27')));
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => SleepPage(day: '2025-05-27'),
+                              ),
+                            );
                           },
                         ),
                       ],
@@ -152,7 +176,10 @@ class _HomePageState extends State<HomePage> {
                           value: '...kcal',
                           color: Colors.orange,
                           onTap: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (_) => CaloriesPage()));
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (_) => CaloriesPage()),
+                            );
                           },
                         ),
                         _buildDataBox(
@@ -160,7 +187,10 @@ class _HomePageState extends State<HomePage> {
                           value: '...km',
                           color: Colors.purple,
                           onTap: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (_) => DistancePage()));
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (_) => DistancePage()),
+                            );
                           },
                         ),
                       ],
@@ -168,6 +198,34 @@ class _HomePageState extends State<HomePage> {
                   ],
                 );
               },
+            ),
+            const SizedBox(height: 30),
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: const Color.fromARGB(255, 131, 194, 141),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  children: [
+                    Text(
+                      'Goal of the day',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 4),
+                    Text(
+                      Provider.of<GoalsProvider>(context,listen: false,).getGoalString(lessons + 1),
+                      style: TextStyle(fontSize: 16, color: Colors.black54),
+                    ),
+                  ],
+                ),
+              ),
             ),
 
             const SizedBox(height: 30),
@@ -183,21 +241,31 @@ class _HomePageState extends State<HomePage> {
                 padding: const EdgeInsets.all(16),
                 child: Column(
                   children: [
-                    Icon(Icons.question_mark_rounded, size: 40, color: Colors.deepPurple),
+                    Icon(
+                      Icons.question_mark_rounded,
+                      size: 40,
+                      color: Colors.deepPurple,
+                    ),
                     const SizedBox(height: 8),
                     Text(
                       "DO YOU KNOW...??",
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.deepPurple),
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.deepPurple,
+                      ),
                     ),
                     const SizedBox(height: 4),
                     FutureBuilder<List<List<dynamic>>>(
                       future: loadCsvData(),
                       builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
                           return const CircularProgressIndicator();
                         } else if (snapshot.hasError) {
                           return Text('Errore nel CSV');
-                        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                        } else if (!snapshot.hasData ||
+                            snapshot.data!.isEmpty) {
                           return Text('CSV vuoto');
                         }
 
@@ -209,7 +277,13 @@ class _HomePageState extends State<HomePage> {
 
                         return Column(
                           children: [
-                            Text(frase, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                            Text(
+                              frase,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
                             SizedBox(height: 8),
                             Text(spiegazione, style: TextStyle(fontSize: 14)),
                           ],

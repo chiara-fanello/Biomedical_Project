@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/provider/goalsProvider.dart';
+import 'package:provider/provider.dart';
 import 'goalsPage.dart';
 import 'lessons/lesson1.dart';
 import 'lessons/lesson10.dart';
@@ -23,10 +25,8 @@ import 'lessons/lesson9.dart';
 
 class Challengepage extends StatelessWidget{
 
-  final int active_lesson = 0;
-
   final int itemCount = 40;
-
+  
     final List<Widget> _pages = [
     Lesson1(),
     Lesson2(),
@@ -52,6 +52,7 @@ class Challengepage extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
+    int lessons = Provider.of<GoalsProvider>(context).lessons();
     return Scaffold(
       appBar: AppBar(
         title: Text('Challanges and Lessons'),
@@ -59,19 +60,26 @@ class Challengepage extends StatelessWidget{
       body: ListView.builder(
         itemCount: itemCount,
         itemBuilder: (context, index) {
-          // Alterna tra sfida e lezione
           bool isChallenge = index % 2 == 0;
-          String title = isChallenge ? 'Challange ${index ~/ 2}' : 'Lesson ${index ~/ 2 + 1}';
+          String title = isChallenge ? 'Challange ${index ~/ 2 + 1}' : 'Lesson ${index ~/ 2 +1}';
 
           return Padding(
             padding: const EdgeInsets.all(8.0),
             child: GestureDetector(
               onTap: () {
-                if(!isChallenge){
+                if(!isChallenge && lessons >= index ~/ 2){
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder:  (context) => _pages[index ~/ 2]
+                    ),
+                  );
+                }
+                else if(isChallenge){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder:  (context) => GoalsPage(id: index ~/ 2 +1)
                     ),
                   );
                 }
