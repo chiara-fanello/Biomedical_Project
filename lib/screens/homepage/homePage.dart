@@ -3,9 +3,7 @@ import 'package:provider/provider.dart';
 import 'dart:math';
 import 'package:flutter/services.dart';
 import 'package:csv/csv.dart';
-
 import 'sleepPage.dart';
-import 'restingHeartRatePage.dart';
 import 'stepPage.dart';
 import 'distancePage.dart';
 import 'caloriesPage.dart';
@@ -31,7 +29,10 @@ class _HomePageState extends State<HomePage> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (!_initialized) {
-      final stepProvider = Provider.of<StepDataProvider>(context, listen: false);
+      final stepProvider = Provider.of<StepDataProvider>(
+        context,
+        listen: false,
+      );
       stepProvider.fetchDayNumSteps();
       _initialized = true;
     }
@@ -43,7 +44,7 @@ class _HomePageState extends State<HomePage> {
     required Color color,
     required VoidCallback onTap,
   }) {
-    return Expanded(  
+    return Expanded(
       child: InkWell(
         onTap: onTap,
         child: Container(
@@ -84,26 +85,9 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Welcome!'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.bed),
-            tooltip: 'Sleep Data',
-            onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (_) => SleepPage(day: '2025-03-27')));
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.monitor_heart),
-            tooltip: 'Heart Rate',
-            onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (_) => RestingHeartRatePage(day: '2025-03-20')));
-            },
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(  // Aggiunto SingleChildScrollView
+      appBar: AppBar(title: Text('Welcome!')),
+      body: SingleChildScrollView(
+        // Aggiunto SingleChildScrollView
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -129,10 +113,14 @@ class _HomePageState extends State<HomePage> {
                       children: [
                         _buildDataBox(
                           label: 'Steps',
-                          value: stepProvider.totalStepsDay?.toString() ?? '...',
+                          value:
+                              stepProvider.totalStepsDay?.toString() ?? '...',
                           color: Colors.blue,
                           onTap: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (_) => StepPage()));
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (_) => StepPage()),
+                            );
                           },
                         ),
                         _buildDataBox(
@@ -140,7 +128,12 @@ class _HomePageState extends State<HomePage> {
                           value: '...h',
                           color: Colors.green,
                           onTap: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (_) => SleepPage(day: '2025-05-27')));
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => SleepPage(day: '2025-03-27'),
+                              ),
+                            );
                           },
                         ),
                       ],
@@ -152,7 +145,10 @@ class _HomePageState extends State<HomePage> {
                           value: '...kcal',
                           color: Colors.orange,
                           onTap: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (_) => CaloriesPage()));
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (_) => CaloriesPage()),
+                            );
                           },
                         ),
                         _buildDataBox(
@@ -160,7 +156,10 @@ class _HomePageState extends State<HomePage> {
                           value: '...km',
                           color: Colors.purple,
                           onTap: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (_) => DistancePage()));
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (_) => DistancePage()),
+                            );
                           },
                         ),
                       ],
@@ -183,21 +182,31 @@ class _HomePageState extends State<HomePage> {
                 padding: const EdgeInsets.all(16),
                 child: Column(
                   children: [
-                    Icon(Icons.question_mark_rounded, size: 40, color: Colors.deepPurple),
+                    Icon(
+                      Icons.question_mark_rounded,
+                      size: 40,
+                      color: Colors.deepPurple,
+                    ),
                     const SizedBox(height: 8),
                     Text(
                       "DO YOU KNOW...??",
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.deepPurple),
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.deepPurple,
+                      ),
                     ),
                     const SizedBox(height: 4),
                     FutureBuilder<List<List<dynamic>>>(
                       future: loadCsvData(),
                       builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
                           return const CircularProgressIndicator();
                         } else if (snapshot.hasError) {
                           return Text('Errore nel CSV');
-                        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                        } else if (!snapshot.hasData ||
+                            snapshot.data!.isEmpty) {
                           return Text('CSV vuoto');
                         }
 
@@ -209,7 +218,13 @@ class _HomePageState extends State<HomePage> {
 
                         return Column(
                           children: [
-                            Text(frase, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                            Text(
+                              frase,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
                             SizedBox(height: 8),
                             Text(spiegazione, style: TextStyle(fontSize: 14)),
                           ],

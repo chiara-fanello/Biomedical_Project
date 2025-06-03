@@ -16,7 +16,8 @@ class ImpactRequest {
   static const String _accessKey = 'access';
   static const String _refreshKey = 'refresh';
 
-  static String patientUsername = 'Jpefaq6m58';  //username to use to extract data, not to access to server
+  static String patientUsername =
+      'Jpefaq6m58'; //username to use to extract data, not to access to server
   static String stepsEndpoint = 'data/v1/steps/patients/';
   static String caloriesEndpoint = 'data/v1/calories/patients/';
   static String sleepEndpoint = 'data/v1/sleep/patients/';
@@ -32,23 +33,22 @@ class ImpactRequest {
     final body = {'username': username, 'password': password};
 
     //try {
-      final response = await http.post(Uri.parse(url), body: body);
+    final response = await http.post(Uri.parse(url), body: body);
 
-      if (response.statusCode == 200) {
-        final decoded = jsonDecode(response.body);
-        final sp = await SharedPreferences.getInstance();
-        await sp.setString(_accessKey, decoded['access']);
-        await sp.setString(_refreshKey, decoded['refresh']);
-        return true;
-      }
+    if (response.statusCode == 200) {
+      final decoded = jsonDecode(response.body);
+      final sp = await SharedPreferences.getInstance();
+      await sp.setString(_accessKey, decoded['access']);
+      await sp.setString(_refreshKey, decoded['refresh']);
+      return true;
+    }
 
-      return false; // login fallito debug
+    return false; // login fallito debug
     //} catch (e) {
-      //print('Login error: $e');
-      //return false;
+    //print('Login error: $e');
+    //return false;
     //}
   }
-
 
   //return access token, if needed
   static Future<String?> getAccessToken() async {
@@ -138,7 +138,10 @@ class ImpactRequest {
   }
 
   //FETCH STEP DATA RANGE
-  static Future<dynamic> fetchStepDataRange(String startDate, String endDate) async {
+  static Future<dynamic> fetchStepDataRange(
+    String startDate,
+    String endDate,
+  ) async {
     final sp = await SharedPreferences.getInstance();
     var access = sp.getString('access');
 
@@ -147,12 +150,11 @@ class ImpactRequest {
       access = sp.getString('access');
     }
 
-    final url = '${ImpactRequest.baseUrl}${ImpactRequest.stepsEndpoint}'
+    final url =
+        '${ImpactRequest.baseUrl}${ImpactRequest.stepsEndpoint}'
         '${ImpactRequest.patientUsername}/daterange/start_date/$startDate/end_date/$endDate/';
 
-    final headers = {
-      HttpHeaders.authorizationHeader: 'Bearer $access',
-    };
+    final headers = {HttpHeaders.authorizationHeader: 'Bearer $access'};
 
     print('Calling: $url');
     final response = await http.get(Uri.parse(url), headers: headers);
@@ -167,11 +169,9 @@ class ImpactRequest {
 
   //FETCH CALORIES DATA DAY
   static Future<dynamic> fetchCaloriesDataDay(String day) async {
-    
     final sp = await SharedPreferences.getInstance();
     var access = sp.getString('access');
 
-    
     if (JwtDecoder.isExpired(access!)) {
       await ImpactRequest.refreshTokens();
       access = sp.getString('access');
@@ -198,7 +198,10 @@ class ImpactRequest {
   }
 
   // FETCH CALORIES DATA RANGE
-  static Future<dynamic> fetchCaloriesDataRange(String startDate, String endDate) async {
+  static Future<dynamic> fetchCaloriesDataRange(
+    String startDate,
+    String endDate,
+  ) async {
     final sp = await SharedPreferences.getInstance();
     var access = sp.getString('access');
 
@@ -207,12 +210,11 @@ class ImpactRequest {
       access = sp.getString('access');
     }
 
-    final url = '${ImpactRequest.baseUrl}${ImpactRequest.caloriesEndpoint}' // <-- modificato
+    final url =
+        '${ImpactRequest.baseUrl}${ImpactRequest.caloriesEndpoint}' // <-- modificato
         '${ImpactRequest.patientUsername}/daterange/start_date/$startDate/end_date/$endDate/';
 
-    final headers = {
-      HttpHeaders.authorizationHeader: 'Bearer $access',
-    };
+    final headers = {HttpHeaders.authorizationHeader: 'Bearer $access'};
 
     print('Calling: $url');
     final response = await http.get(Uri.parse(url), headers: headers);
@@ -227,29 +229,24 @@ class ImpactRequest {
 
   // FETCH DISTANCE DATA DAY
   static Future<dynamic> fetchDistanceDataDay(String day) async {
-    
     final sp = await SharedPreferences.getInstance();
     var access = sp.getString('access');
 
-    
     if (JwtDecoder.isExpired(access!)) {
       await ImpactRequest.refreshTokens();
       access = sp.getString('access');
     }
 
-    
     final url =
         ImpactRequest.baseUrl +
-        ImpactRequest.distanceEndpoint + 
+        ImpactRequest.distanceEndpoint +
         ImpactRequest.patientUsername +
         '/day/$day/';
     final headers = {HttpHeaders.authorizationHeader: 'Bearer $access'};
 
-    
     print('Calling: $url');
     final response = await http.get(Uri.parse(url), headers: headers);
 
-    
     var result;
     if (response.statusCode == 200) {
       result = jsonDecode(response.body);
@@ -259,7 +256,10 @@ class ImpactRequest {
   }
 
   // FETCH DISTANCE DATA RANGE
-  static Future<dynamic> fetchDistanceDataRange(String startDate, String endDate) async {
+  static Future<dynamic> fetchDistanceDataRange(
+    String startDate,
+    String endDate,
+  ) async {
     final sp = await SharedPreferences.getInstance();
     var access = sp.getString('access');
 
@@ -268,12 +268,11 @@ class ImpactRequest {
       access = sp.getString('access');
     }
 
-    final url = '${ImpactRequest.baseUrl}${ImpactRequest.distanceEndpoint}' 
+    final url =
+        '${ImpactRequest.baseUrl}${ImpactRequest.distanceEndpoint}'
         '${ImpactRequest.patientUsername}/daterange/start_date/$startDate/end_date/$endDate/';
 
-    final headers = {
-      HttpHeaders.authorizationHeader: 'Bearer $access',
-    };
+    final headers = {HttpHeaders.authorizationHeader: 'Bearer $access'};
 
     print('Calling: $url');
     final response = await http.get(Uri.parse(url), headers: headers);
@@ -285,7 +284,6 @@ class ImpactRequest {
       return null;
     }
   }
-
 
   //FETCH SLEEP DATA DAY
   static Future<dynamic> fetchSleepData(String day) async {
@@ -319,6 +317,36 @@ class ImpactRequest {
     return result;
   }
 
+  //  FETCH SLEEP DATA RANGE
+  static Future<dynamic> fetchSleepDataRange(
+    String startDate,
+    String endDate,
+  ) async {
+    final sp = await SharedPreferences.getInstance();
+    var access = sp.getString('access');
+
+    if (access == null || JwtDecoder.isExpired(access)) {
+      await ImpactRequest.refreshTokens();
+      access = sp.getString('access');
+    }
+
+    final url =
+        '${ImpactRequest.baseUrl}${ImpactRequest.sleepEndpoint}'
+        '${ImpactRequest.patientUsername}/daterange/start_date/$startDate/end_date/$endDate/';
+
+    final headers = {HttpHeaders.authorizationHeader: 'Bearer $access'};
+
+    print('Calling: $url');
+    final response = await http.get(Uri.parse(url), headers: headers);
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      print('Error ${response.statusCode}: ${response.body}');
+      return null;
+    }
+  }
+
   // FETCH HR
   static Future<dynamic> fetchRestingHeartRateData(String day) async {
     final sp = await SharedPreferences.getInstance();
@@ -350,6 +378,4 @@ class ImpactRequest {
 
     return result;
   }
-  
-
 }//ImpactRequest

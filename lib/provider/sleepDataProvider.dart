@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import '../models/sleepdata.dart';
 import '../services/impact.dart';
-import '../models/weeklySleepChart.dart';
 
 class SleepDataProvider extends ChangeNotifier {
   List<SleepData> sleepData = [];
-  List<SleepSummary> weeklySummaries = [];
+  List<WeeklySleepSummary> weeklySummaries = [];
 
   Future<void> fetchSleepData(String day) async {
     final data = await ImpactRequest.fetchSleepData(day);
@@ -28,7 +26,6 @@ class SleepDataProvider extends ChangeNotifier {
         sleepData.add(sleep);
 
         // Update the weekly summary chart
-        _updateWeeklySummary(sleep);
 
         notifyListeners();
         print('Sleep data loaded successfully');
@@ -40,35 +37,18 @@ class SleepDataProvider extends ChangeNotifier {
     }
   }
 
-  void _updateWeeklySummary(SleepData data) {
-    final segments = data.levelsData;
-    if (segments.isEmpty) return;
-
-    final duration = segments.last.end.difference(segments.first.start);
-    final label = DateFormat(
-      'EEE dd/MM',
-    ).format(data.dateOfSleep); // unique day label
-
-    final summary = SleepSummary(label: label, duration: duration);
-
-    // Avoid exact duplicates
-    weeklySummaries.removeWhere((s) => s.label == label);
-    weeklySummaries.add(summary);
-
-    // Keep at most 7 recent entries
-    if (weeklySummaries.length > 7) {
-      weeklySummaries.removeAt(0);
+  Future<void> fetchSleepDataRange(String startDate, String endDate) async {
+    try {
+      final data = await ImpactRequest.fetchSleepDataRange(startDate, endDate);
+      if (data != null) {
+        weeklySummaries = parseWeeklySleepData(data);
+        notifyListeners();
+      } else {
+        print('fetchSleepDataRange returned null');
+      }
+    } catch (e, stack) {
+      print('Error fetching or parsing weekly sleep data: $e');
+      print(stack);
     }
-
-    // (Optional) Sort by label/date
-    weeklySummaries.sort((a, b) => a.label.compareTo(b.label));
   }
-
-  void clearData() {
-    print('Clearing only sleepData, NOT weeklySummaries');
-    sleepData.clear();
-    notifyListeners();
-  }
-
-  List<SleepSummary> getWeeklySummaries() => weeklySummaries;
 }

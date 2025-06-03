@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/provider/caloriesDataProvider.dart';
 import 'package:flutter_application_1/provider/distanceDataProvider.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'provider/loginProvider.dart';
 import 'provider/sleepDataProvider.dart';
 import 'provider/stepDataProvider.dart';
 import 'package:provider/provider.dart';
 import 'provider/objectives.dart';
 import 'screens/loginPage.dart';
-import 'screens/homepage/homePage.dart';
 import 'provider/rhrDataProvider.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await initializeDateFormatting('it');
+
   runApp(
     MultiProvider(
       providers: [
@@ -19,7 +23,7 @@ void main() {
         ChangeNotifierProvider(create: (_) => RestingHeartRateProvider()),
         ChangeNotifierProvider(create: (_) => StepDataProvider()),
         ChangeNotifierProvider(create: (_) => CaloriesDataProvider()),
-        ChangeNotifierProvider(create: (_) => DistanceDataProvider())
+        ChangeNotifierProvider(create: (_) => DistanceDataProvider()),
       ],
       child: MyApp(),
     ),

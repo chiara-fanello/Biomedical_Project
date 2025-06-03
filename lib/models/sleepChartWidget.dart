@@ -14,15 +14,14 @@ class SleepBarChart extends StatelessWidget {
   };
 
   static const stageColors = {
-    SleepStage.deep: Colors.green,
-    SleepStage.light: Colors.blue,
-    SleepStage.rem: Colors.orange,
-    SleepStage.awake: Colors.grey,
+    SleepStage.deep: Color(0xFF81C784), // verde menta
+    SleepStage.light: Color(0xFF64B5F6), // azzurro
+    SleepStage.rem: Color(0xFFFFB74D), // arancio chiaro
+    SleepStage.awake: Color(0xFFE57373), // rosso tenue
   };
 
   @override
   Widget build(BuildContext context) {
-    // Calculate overall sleep time range
     final startTime = segments
         .map((s) => s.start)
         .reduce((a, b) => a.isBefore(b) ? a : b);
@@ -31,17 +30,21 @@ class SleepBarChart extends StatelessWidget {
         .reduce((a, b) => a.isAfter(b) ? a : b);
     final totalMinutes = endTime.difference(startTime).inMinutes;
 
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: SizedBox(
-        width: totalMinutes * 2, // Wider for better readability
-        height: 280,
-        child: CustomPaint(
-          painter: _SleepBarChartPainter(
-            segments: segments,
-            startTime: startTime,
-            endTime: endTime,
-            stageColors: stageColors,
+    return Container(
+      color: const Color(0xFFF9FAFB),
+      padding: const EdgeInsets.all(12),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: SizedBox(
+          width: totalMinutes * 2,
+          height: 180,
+          child: CustomPaint(
+            painter: _SleepBarChartPainter(
+              segments: segments,
+              startTime: startTime,
+              endTime: endTime,
+              stageColors: stageColors,
+            ),
           ),
         ),
       ),
@@ -73,87 +76,89 @@ class _SleepBarChartPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final paint = Paint();
     final totalMinutes = endTime.difference(startTime).inMinutes;
+    final xOffset = 60.0;
+    final chartWidth = size.width - xOffset;
+    final rowHeight = (size.height - 65) / stageOrder.length;
 
-    final rowHeight = (size.height / stageOrder.length) * 0.6;
-    final textPainter = TextPainter(
-      textAlign: TextAlign.left,
-      textDirection: TextDirection.rtl,
+    final labelStyle = const TextStyle(
+      color: Colors.black87,
+      fontSize: 12,
+      fontWeight: FontWeight.w500,
     );
 
-    // Draw Y-axis labels
+    final textPainter = TextPainter(
+      textAlign: TextAlign.left,
+      textDirection: TextDirection.ltr,
+    );
+
+    // Linee guida orizzontali + etichette
     for (int i = 0; i < stageOrder.length; i++) {
-      final label = SleepBarChart.stageLabels[stageOrder[i]]!;
-      textPainter.text = TextSpan(
-        text: label,
-        style: const TextStyle(color: Colors.black, fontSize: 12),
+      final y = i * rowHeight;
+
+      // Linea guida
+      paint.color = Colors.grey.shade300;
+      paint.strokeWidth = 1;
+      canvas.drawLine(
+        Offset(xOffset, y + rowHeight / 2),
+        Offset(size.width, y + rowHeight / 2),
+        paint,
       );
+
+      // Etichetta
+      final label = SleepBarChart.stageLabels[stageOrder[i]]!;
+      textPainter.text = TextSpan(text: label, style: labelStyle);
       textPainter.layout();
       textPainter.paint(
         canvas,
-        Offset(0, i * rowHeight + (rowHeight - textPainter.height) / 2),
+        Offset(0, y + rowHeight / 2 - textPainter.height / 2),
       );
     }
 
-    final xOffset = 60.0; // Leave space for Y-axis labels
-
+    // Disegna segmenti
     for (var segment in segments) {
       final stageIndex = stageOrder.indexOf(segment.stage);
-      final top = stageIndex * rowHeight + 4;
-      final barHeight = rowHeight;
+      final yTop = stageIndex * rowHeight + rowHeight * 0.2;
+      final barHeight = rowHeight * 0.5;
 
       final startMinutes = segment.start.difference(startTime).inMinutes;
       final endMinutes = segment.end.difference(startTime).inMinutes;
 
-      final overlap = 2.0;
-      const shrink = 2.0;
+      final left = xOffset + (startMinutes / totalMinutes) * chartWidth;
+      final right = xOffset + (endMinutes / totalMinutes) * chartWidth;
 
-      final left =
-          xOffset +
-          (startMinutes / totalMinutes) * (size.width - xOffset) +
-          shrink;
-      final right =
-          xOffset +
-          (endMinutes / totalMinutes) * (size.width - xOffset) +
-          overlap -
-          shrink;
-
-      paint.color = stageColors[segment.stage] ?? Colors.black;
       final rrect = RRect.fromRectAndRadius(
-        Rect.fromLTRB(left, top, right, top + barHeight),
-        Radius.circular(6),
+        Rect.fromLTRB(left, yTop, right, yTop + barHeight),
+        const Radius.circular(8),
       );
 
-      // Light shadow under bar
+      // Ombra soft
       canvas.drawShadow(
         Path()..addRRect(rrect),
-        Colors.black.withOpacity(0.2),
-        2.0,
+        Colors.black.withOpacity(0.12),
+        3,
         false,
       );
 
-      // Rounded colored bar
-      paint.color = stageColors[segment.stage]!.withOpacity(0.9);
+      // Riempimento
+      paint.color = stageColors[segment.stage]!.withOpacity(0.85);
       canvas.drawRRect(rrect, paint);
     }
 
-    // Draw X-axis time labels
-
-    final labelStyle = TextStyle(color: Colors.black, fontSize: 10);
-
-    const tickInterval = 45; // Minutes between labels (e.g. every 45 mins)
+    // Etichette orarie (asse X)
+    const tickInterval = 60;
+    final timeLabelStyle = const TextStyle(color: Colors.grey, fontSize: 10);
 
     for (int i = 0; i <= totalMinutes; i += tickInterval) {
       final tickTime = startTime.add(Duration(minutes: i));
-      final label =
-          "${tickTime.hour.toString().padLeft(2, '0')}:${tickTime.minute.toString().padLeft(2, '0')}";
+      final label = "${tickTime.hour.toString().padLeft(2, '0')}:00";
+      final x = xOffset + (i / totalMinutes) * chartWidth;
 
-      final x = xOffset + (i / totalMinutes) * (size.width - xOffset);
       final tp = TextPainter(
-        text: TextSpan(text: label, style: labelStyle),
+        text: TextSpan(text: label, style: timeLabelStyle),
         textDirection: TextDirection.ltr,
       );
       tp.layout();
-      tp.paint(canvas, Offset(x - tp.width / 2, size.height - tp.height - 50));
+      tp.paint(canvas, Offset(x - tp.width / 2, size.height - 50));
     }
   }
 

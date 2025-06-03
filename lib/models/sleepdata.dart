@@ -131,3 +131,29 @@ class SleepSegment {
     return 'SleepSegment(stage: $stage, start: $start, end: $end, duration: ${duration.inMinutes} min)';
   }
 }
+
+class WeeklySleepSummary {
+  final DateTime date;
+  final Duration totalSleep;
+
+  WeeklySleepSummary({required this.date, required this.totalSleep});
+}
+
+List<WeeklySleepSummary> parseWeeklySleepData(Map<String, dynamic> json) {
+  final List<WeeklySleepSummary> summaries = [];
+
+  if (json['status'] == 'success' && json['data'] != null) {
+    for (var item in json['data']) {
+      final dateStr = item['date'] as String;
+      final sleepData = item['data'];
+      final durationMs = (sleepData['duration'] as num).toInt();
+
+      final date = DateTime.parse(dateStr);
+      final totalSleep = Duration(milliseconds: durationMs);
+
+      summaries.add(WeeklySleepSummary(date: date, totalSleep: totalSleep));
+    }
+  }
+
+  return summaries;
+}
