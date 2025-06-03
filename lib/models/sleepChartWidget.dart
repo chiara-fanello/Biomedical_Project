@@ -22,6 +22,14 @@ class SleepBarChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (segments.isEmpty) {
+      return Center(
+        child: Text(
+          'No sleep Data Available',
+          style: TextStyle(color: Colors.grey, fontStyle: FontStyle.italic),
+        ),
+      );
+    }
     final startTime = segments
         .map((s) => s.start)
         .reduce((a, b) => a.isBefore(b) ? a : b);
@@ -29,6 +37,8 @@ class SleepBarChart extends StatelessWidget {
         .map((s) => s.end)
         .reduce((a, b) => a.isAfter(b) ? a : b);
     final totalMinutes = endTime.difference(startTime).inMinutes;
+
+    // Altrimenti, mostra il grafico normalmente
 
     return Container(
       padding: const EdgeInsets.all(12),

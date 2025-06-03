@@ -47,13 +47,19 @@ class _HomePageState extends State<HomePage> {
 
   // Chiamata al provider per ottenere i dati del sonno
   Future<void> _loadData() async {
-    final todayStr = DateFormat('yyyy-MM-dd').format(DateTime.now());
-    final startDate = DateTime.now().subtract(const Duration(days: 6));
-    final startDateStr = DateFormat('yyyy-MM-dd').format(startDate);
+    String day = '2025-05-11';
+    final referenceDay = DateTime.parse(day);
+    final todayStr = DateFormat('yyyy-MM-dd').format(referenceDay);
+    final startDateStr = DateFormat(
+      'yyyy-MM-dd',
+    ).format(referenceDay.subtract(const Duration(days: 6)));
 
     try {
       await Future.wait([
-        Provider.of<SleepDataProvider>(context, listen: false).fetchSleepData(),
+        Provider.of<SleepDataProvider>(
+          context,
+          listen: false,
+        ).fetchSleepData(day),
         Provider.of<SleepDataProvider>(
           context,
           listen: false,
@@ -66,12 +72,6 @@ class _HomePageState extends State<HomePage> {
     } catch (e) {
       // Gestisci eventuali errori qui (log, snackBar, ecc.)
       print('Errore caricamento dati: $e');
-    } finally {
-      if (mounted) {
-        setState(() {
-          var _isLoading = false;
-        });
-      }
     }
   }
 

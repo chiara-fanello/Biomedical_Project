@@ -1,72 +1,48 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import '../../models/sleepdata.dart';
 import 'package:provider/provider.dart';
 import '../../provider/sleepDataProvider.dart';
 import '../../provider/rhrDataProvider.dart';
 import '../../models/weeklySleepChart.dart';
 import '../../models/sleepChartWidget.dart';
 
-class SleepPage extends StatefulWidget {
+class SleepPage extends StatelessWidget {
   final String day;
 
   const SleepPage({super.key, required this.day});
 
   @override
-  State<SleepPage> createState() => _SleepPageState();
-}
-
-class _SleepPageState extends State<SleepPage> {
-  late Future<void> _dataFuture;
-
-  @override
-  void initState() {
-    super.initState();
-
-    final selectedDay = DateTime.parse(widget.day);
-    final startDate = selectedDay.subtract(const Duration(days: 6));
-    final startDateStr = DateFormat('yyyy-MM-dd').format(startDate);
-    final endDateStr = DateFormat('yyyy-MM-dd').format(selectedDay);
-
-    _dataFuture = Future.wait([
-      Future(() async {
-        final sleepProvider = Provider.of<SleepDataProvider>(
-          context,
-          listen: false,
-        );
-        await sleepProvider.fetchSleepData();
-        await sleepProvider.fetchSleepDataRange(startDateStr, endDateStr);
-      }),
-      Future(() async {
-        final hrProvider = Provider.of<RestingHeartRateProvider>(
-          context,
-          listen: false,
-        );
-        await hrProvider.fetchRestingHeartRate(widget.day);
-      }),
-    ]);
-  }
-
-  // Tutto il resto (import, class SleepPage, ecc.) rimane invariato fino al build
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Sleep Overview')),
-      body: FutureBuilder<void>(
-        future: _dataFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          final sleepProvider = Provider.of<SleepDataProvider>(context);
-          final hrProvider = Provider.of<RestingHeartRateProvider>(context);
+      body: Consumer2<SleepDataProvider, RestingHeartRateProvider>(
+        builder: (context, sleepProvider, hrProvider, _) {
           final sleepData = sleepProvider.sleepData;
           final weeklySummaries = sleepProvider.weeklySummaries;
 
-          if (sleepData.isEmpty) {
-            return const Center(child: Text("No sleep data available."));
+          ///////////////////////////////////////
+          /// IF PER CHIARA
+          ///                ///
+          ///               ///
+          ///               ///
+          ///               ///
+
+          final lastNightDuration = sleepProvider.getLastNightSleepDuration();
+          String sleepQualityMessage = "Durata sonno non disponibile";
+          if (lastNightDuration != null) {
+            if (lastNightDuration.inHours >= 8) {
+              sleepQualityMessage = "Hai dormito a lungo! Ottimo riposo!";
+            } else if (lastNightDuration.inHours >= 6) {
+              sleepQualityMessage = "Durata del sonno nella media.";
+            } else {
+              sleepQualityMessage =
+                  "Hai dormito poco, cerca di riposare di più.";
+            }
           }
+
+          final dailyData =
+              sleepData.isNotEmpty ? sleepData.first : SleepData.empty();
 
           final restingHR = hrProvider.restingHeartRate;
           double restingHRValue = 0;
@@ -77,7 +53,6 @@ class _SleepPageState extends State<SleepPage> {
             restingHRValue = sum / restingHR.data.length;
           }
 
-          final dailyData = sleepData.first;
           final formattedDate = DateFormat(
             'yyyy-MM-dd',
           ).format(dailyData.dateOfSleep);
@@ -86,16 +61,37 @@ class _SleepPageState extends State<SleepPage> {
             Duration.zero,
             (sum, item) => sum + item.totalSleep,
           );
-
           final average =
               weeklySummaries.isNotEmpty
                   ? totalDuration ~/ weeklySummaries.length
                   : Duration.zero;
+
           String stressLevel = "Basso";
           if (restingHRValue > 65 && average.inHours < 6) {
             stressLevel = "Alto";
           } else if (restingHRValue > 60 || average.inHours < 6) {
             stressLevel = "Moderato";
+          }
+          // Crea lista di 7 giorni della settimana con sonno, riempiendo i buchi con zero
+          List<WeeklySleepSummary> completedWeek(
+            List<WeeklySleepSummary> originalSummaries,
+            String referenceDay,
+          ) {
+            final manualDate = DateTime.parse(day);
+            final startOfWeek = manualDate.subtract(
+              Duration(days: manualDate.weekday - 1),
+            );
+            final Map<String, WeeklySleepSummary> map = {
+              for (var e in originalSummaries)
+                DateFormat('yyyy-MM-dd').format(e.date): e,
+            };
+
+            return List.generate(7, (index) {
+              final date = startOfWeek.add(Duration(days: index));
+              final key = DateFormat('yyyy-MM-dd').format(date);
+              return map[key] ??
+                  WeeklySleepSummary(date: date, totalSleep: Duration.zero);
+            });
           }
 
           return SingleChildScrollView(
@@ -116,14 +112,52 @@ class _SleepPageState extends State<SleepPage> {
                     context,
                   ).textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
                 ),
-
                 const SizedBox(height: 8),
                 SizedBox(
                   height: 200,
                   child: SleepBarChart(segments: dailyData.levelsData),
                 ),
-
-                const SizedBox(height: 0),
+                Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  color: Colors.blue.shade50,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 16,
+                      horizontal: 20,
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(Icons.bedtime, color: Colors.blueAccent, size: 36),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Analisi durata del sonno',
+                                style: Theme.of(
+                                  context,
+                                ).textTheme.titleMedium?.copyWith(
+                                  color: Colors.blueAccent,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              const SizedBox(height: 6),
+                              Text(
+                                sleepQualityMessage,
+                                style: Theme.of(context).textTheme.bodyLarge
+                                    ?.copyWith(color: Colors.black87),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 24),
                 if (weeklySummaries.isNotEmpty) ...[
                   Text(
                     "Andamento settimanale",
@@ -134,18 +168,20 @@ class _SleepPageState extends State<SleepPage> {
                   const SizedBox(height: 12),
                   SizedBox(
                     height: 130,
-                    child: WeeklySleepBarChart(sleepSummaries: weeklySummaries),
+                    child: WeeklySleepBarChart(
+                      sleepSummaries: completedWeek(weeklySummaries, day),
+                    ),
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    "On average over the past seven days, you slept for:  ${average.inHours}h ${average.inMinutes.remainder(60)}m",
+                    "In media negli ultimi 7 giorni hai dormito: ${average.inHours}h ${average.inMinutes.remainder(60)}m",
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       fontStyle: FontStyle.italic,
                     ),
                   ),
                 ],
 
-                const SizedBox(height: 16),
+                const SizedBox(height: 24),
                 Text(
                   "Dati fisiologici",
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
@@ -154,9 +190,8 @@ class _SleepPageState extends State<SleepPage> {
                 ),
                 const SizedBox(height: 12),
                 RestingHeartRateCard(restingHeartRate: restingHRValue),
-                const SizedBox(height: 16), // Spazio per futura Card
 
-                const SizedBox(height: 16),
+                const SizedBox(height: 24),
                 Text(
                   "Stress Level",
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
@@ -165,7 +200,6 @@ class _SleepPageState extends State<SleepPage> {
                 ),
                 const SizedBox(height: 12),
                 StressLevelCard(level: stressLevel),
-                const SizedBox(height: 16), // Spazio
               ],
             ),
           );
@@ -232,16 +266,16 @@ class StressLevelCard extends StatelessWidget {
     IconData icon;
 
     switch (level) {
-      case "High":
+      case "Alto":
         color = Colors.redAccent;
         icon = Icons.warning;
         break;
-      case "Moderate":
+      case "Moderato":
         color = Colors.orange;
         icon = Icons.error_outline;
         break;
       default:
-        color = const Color(0xFF2E7D32); // Verde più vivido
+        color = const Color(0xFF2E7D32);
         icon = Icons.check_circle_outline;
     }
 
@@ -263,7 +297,6 @@ class StressLevelCard extends StatelessWidget {
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       color: color,
                       fontWeight: FontWeight.w600,
-                      letterSpacing: 0.8,
                     ),
                   ),
                   const SizedBox(height: 6),
@@ -272,7 +305,6 @@ class StressLevelCard extends StatelessWidget {
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                       color: color,
                       fontWeight: FontWeight.bold,
-                      letterSpacing: 1.2,
                     ),
                   ),
                 ],

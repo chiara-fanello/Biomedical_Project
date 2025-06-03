@@ -37,6 +37,18 @@ class SleepData {
       levelsData: levelsData,
     );
   }
+  factory SleepData.empty() {
+    return SleepData(
+      dateOfSleep: DateTime.now(),
+      levelsData: [],
+      levelsSummary: SleepLevelsSummary(
+        deep: SleepStageSummary(minutes: 0),
+        light: SleepStageSummary(minutes: 0),
+        rem: SleepStageSummary(minutes: 0),
+        wake: SleepStageSummary(minutes: 0),
+      ),
+    );
+  }
 }
 
 class SleepLevelsSummary {

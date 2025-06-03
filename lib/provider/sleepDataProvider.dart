@@ -6,8 +6,7 @@ class SleepDataProvider extends ChangeNotifier {
   List<SleepData> sleepData = [];
   List<WeeklySleepSummary> weeklySummaries = [];
 
-  Future<void> fetchSleepData() async {
-    String day = '2025-05-05';
+  Future<void> fetchSleepData(String day) async {
     final data = await ImpactRequest.fetchSleepData(day);
     print('Received data for day $day:\n$data');
 
@@ -25,8 +24,6 @@ class SleepDataProvider extends ChangeNotifier {
         sleepData.clear(); // Only daily data
         final sleep = SleepData.fromJson(inner, year);
         sleepData.add(sleep);
-
-        // Update the weekly summary chart
 
         notifyListeners();
         print('Sleep data loaded successfully');
@@ -54,6 +51,17 @@ class SleepDataProvider extends ChangeNotifier {
     final minutes = totalDuration.inMinutes % 60;
 
     return "${hours}h ${minutes.toString().padLeft(2, '0')}m";
+  }
+
+  Duration? getLastNightSleepDuration() {
+    if (sleepData.isEmpty) return null;
+    final lastNight = sleepData.last;
+    if (lastNight.levelsData.isEmpty) return null;
+
+    return lastNight.levelsData.fold<Duration>(
+      Duration.zero,
+      (sum, segment) => sum + segment.duration,
+    );
   }
 
   Future<void> fetchSleepDataRange(String startDate, String endDate) async {
