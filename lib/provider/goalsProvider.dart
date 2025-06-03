@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/provider/goalsProvider.dart';
-import 'package:provider/provider.dart';
 
+class GoalsProvider with ChangeNotifier {
+  int active_lesson = 0;
 
-class GoalsPage extends StatelessWidget {
-  final int id;
-  const GoalsPage({Key? key, required this.id}) : super(key: key);
+  int lessons() {
+    return active_lesson;
+  }
 
-  bool isPassed(int id, int active_lesson){
-    print("id: $id, active: $active_lesson");
-    if(id  == active_lesson + 1){
-      print("passato");
-      return true;
-      /*switch (id) {
+  void setLessonsPassed() {
+    active_lesson += 1;
+    notifyListeners();
+  }
+
+  String getGoalString(int id) {
+    switch (id) {
       case 1:
         return 'Walk at least 6,000 steps per 3 consecutive days';
       case 2:
@@ -53,30 +54,8 @@ class GoalsPage extends StatelessWidget {
         return 'Improve your weekly resting heart rate by at least 2 bpm';
       case 20:
         return 'Reduce night awakenings and improve sleep quality for 5 consecutive nights';
-        */
+      default:
+        return 'Error';
     }
-      return false;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final active_lesson = Provider.of<GoalsProvider>(context).lessons();
-    String goalDescription = Provider.of<GoalsProvider>(context, listen: false).getGoalString(id);
-    print("id: $id, lesson: $active_lesson");
-    if(isPassed(id, active_lesson)){
-      Provider.of<GoalsProvider>(context, listen: false).setLessonsPassed();
-    }
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Goal #$id'),
-      ),
-      
-    body:  Container(
-        padding: EdgeInsets.all(16.0),
-        color: Colors.transparent, // opzionale, per rendere tappabile l'intera area
-        child: Text(goalDescription),
-      ),
-    );
-    
   }
 }
