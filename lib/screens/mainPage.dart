@@ -45,8 +45,8 @@ class _MainPageState extends State<MainPage> {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.sports_handball_outlined),
-            activeIcon: Icon(Icons.map),
+            icon: Icon(Icons.auto_stories_outlined),
+            activeIcon: Icon(Icons.auto_stories),
             label: 'Challenge',
           ),
           BottomNavigationBarItem(

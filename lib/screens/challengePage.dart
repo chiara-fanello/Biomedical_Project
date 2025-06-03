@@ -55,13 +55,13 @@ class Challengepage extends StatelessWidget{
     int lessons = Provider.of<GoalsProvider>(context).lessons();
     return Scaffold(
       appBar: AppBar(
-        title: Text('Challanges and Lessons'),
+        title: Text('Challenges and Lessons'),
       ),
       body: ListView.builder(
         itemCount: itemCount,
         itemBuilder: (context, index) {
           bool isChallenge = index % 2 == 0;
-          String title = isChallenge ? 'Challange ${index ~/ 2 + 1}' : 'Lesson ${index ~/ 2 +1}';
+          String title = isChallenge ? 'Challenge ${index ~/ 2 + 1}' : 'Lesson ${index ~/ 2 +1}';
 
           return Padding(
             padding: const EdgeInsets.all(8.0),

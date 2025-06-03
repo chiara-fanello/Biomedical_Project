@@ -35,14 +35,14 @@ class _CaloriesPageState extends State<CaloriesPage> {
             final monthCalories = caloriesProvider.totalCaloriesMonth ?? 0;
 
             String message = '';
-            if (dayCalories < 500) {
-              message = 'You should burn more calories today!';
-            } else if (dayCalories < 1500) {
+            if (dayCalories < 1000) {
+              message = 'You should burn more calories today!';  // QUI CHIARA
+            } else if (dayCalories < 2000) {
               message = 'Nice effort, keep moving!';
-            } else if (dayCalories < 3000) {
+            } else if (dayCalories < 3300) {
               message = 'Great job, you’re staying active!';
             } else {
-              message = 'You are unstoppable!';
+              message = 'You are The Rock';
             }
 
             return Column(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/provider/caloriesDataProvider.dart';
 import 'package:flutter_application_1/provider/goalsProvider.dart';
 import 'package:intl/intl.dart';
 import '../../provider/rhrDataProvider.dart';
@@ -12,6 +13,8 @@ import 'stepPage.dart';
 import 'distancePage.dart';
 import 'caloriesPage.dart';
 import '../../provider/stepDataProvider.dart';
+import '../../provider/distanceDataProvider.dart';
+import '../../provider/caloriesDataProvider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -148,8 +151,8 @@ class _HomePageState extends State<HomePage> {
             ),
             const SizedBox(height: 16),
 
-            Consumer<StepDataProvider>(
-              builder: (context, stepProvider, _) {
+            Consumer3<StepDataProvider, DistanceDataProvider, CaloriesDataProvider>(
+              builder: (context, stepProvider, distanceProvider, caloriesProvider, _) {
                 return Column(
                   children: [
                     Row(
@@ -186,7 +189,7 @@ class _HomePageState extends State<HomePage> {
                       children: [
                         _buildDataBox(
                           label: 'Calories',
-                          value: '...kcal',
+                          value: caloriesProvider.totalCaloriesDay?.toString() ?? '... cal',
                           color: Colors.orange,
                           onTap: () {
                             Navigator.push(
@@ -197,7 +200,9 @@ class _HomePageState extends State<HomePage> {
                         ),
                         _buildDataBox(
                           label: 'Distance',
-                          value: '...km',
+                          value: distanceProvider.totalDistanceDay != null //altrimenti potevo usare come sopra '??'
+                          ? '${distanceProvider.totalDistanceDay!.toStringAsFixed(2)} km' //per avere solo due decimali
+                          : '... km',
                           color: Colors.purple,
                           onTap: () {
                             Navigator.push(
@@ -212,7 +217,11 @@ class _HomePageState extends State<HomePage> {
                 );
               },
             ),
-            const SizedBox(height: 30),
+
+            const SizedBox(height: 5),
+            Center(child:Text('If you don\'t see values, update manually by clicking the boxes', style: TextStyle(fontSize: 13, fontStyle: FontStyle.italic) )),
+            const SizedBox(height:5),
+
             Padding(
               padding: const EdgeInsets.all(16),
               child: Container(
@@ -244,7 +253,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
 
-            const SizedBox(height: 30),
+            //const SizedBox(height: 5),
 
             Padding(
               padding: const EdgeInsets.all(16),

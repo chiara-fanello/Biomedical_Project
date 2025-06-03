@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/impact.dart';
-import '../models/caloriesdata.dart'; // Presumibilmente rinominato anche il model
+import '../models/caloriesdata.dart'; 
 
 class CaloriesDataProvider extends ChangeNotifier {
 
@@ -10,7 +10,6 @@ class CaloriesDataProvider extends ChangeNotifier {
 
   // FETCH CALORIES DATA DAY
   void fetchCaloriesData(String day) async {
-
     final data = await ImpactRequest.fetchCaloriesDataDay(day);
 
     if (data != null) {
@@ -66,7 +65,10 @@ class CaloriesDataProvider extends ChangeNotifier {
     for (var dayData in data) {
       int dayTotal = 0;
       for (var entry in dayData['data']) {
-        dayTotal += int.tryParse(entry['value'].toString()) ?? 0;
+        final valStr = entry['value'].toString();
+        final double? valDouble = double.tryParse(valStr);
+        final int valInt = valDouble != null ? valDouble.round() : 0;
+        dayTotal += valInt;
       }
       total += dayTotal;
       dayCount++;
@@ -87,7 +89,10 @@ class CaloriesDataProvider extends ChangeNotifier {
       for (var dayData in data['data']) {
         int dayTotal = 0;
         for (var entry in dayData['data']) {
-          dayTotal += int.tryParse(entry['value'].toString()) ?? 0;
+          final valStr = entry['value'].toString();
+          final double? valDouble = double.tryParse(valStr);
+          final int valInt = valDouble != null ? valDouble.round() : 0;
+          dayTotal += valInt;
         }
         total += dayTotal;
         dayCount++;
@@ -102,13 +107,24 @@ class CaloriesDataProvider extends ChangeNotifier {
   }
 
   Future<void> fetchDayNumCalories() async {
-    final data = await ImpactRequest.fetchCaloriesDataDay("2025-05-25");
+    final data = await ImpactRequest.fetchCaloriesDataDay("2025-03-25");
+    print(data);
 
     if (data != null && data['data'] != null && data['data']['data'] != null) {
       int total = 0;
       for (var entry in data['data']['data']) {
-        total += int.tryParse(entry['value'].toString()) ?? 0;
+        //print(entry['value']);
+        //print('entry["value"] = ${entry['value']} (${entry['value'].runtimeType})');
+
+        final valStr = entry['value'].toString();
+        final double? valDouble = double.tryParse(valStr);
+        final int valInt = valDouble != null ? valDouble.round() : 0;
+
+        total += valInt;
+        //print('total provvisorio $total');
       }
+      //print('TOTALE');
+      //print(total);
 
       totalCaloriesDay = total;
     } else {
@@ -122,5 +138,5 @@ class CaloriesDataProvider extends ChangeNotifier {
     caloriesData.clear();
     notifyListeners();
   }
+}
 
-} // CaloriesDataProvider

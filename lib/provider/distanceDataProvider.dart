@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/impact.dart';
-import '../models/distancedata.dart'; // Assicurati di avere questo model
+import '../models/distancedata.dart';
 
 class DistanceDataProvider extends ChangeNotifier {
 
@@ -72,7 +72,7 @@ class DistanceDataProvider extends ChangeNotifier {
       dayCount++;
     }
 
-    totalDistanceMonth = dayCount > 0 ? (total / dayCount) : 0;
+    totalDistanceMonth = dayCount > 0 ? (total / dayCount) /10000 : 0;
 
     notifyListeners();
   }
@@ -93,7 +93,7 @@ class DistanceDataProvider extends ChangeNotifier {
         dayCount++;
       }
 
-      totalDistanceWeek = dayCount > 0 ? (total / dayCount) : 0;
+      totalDistanceWeek = dayCount > 0 ? (total / dayCount) /10000 : 0;
     } else {
       totalDistanceWeek = 0;
     }
@@ -110,7 +110,7 @@ class DistanceDataProvider extends ChangeNotifier {
         total += double.tryParse(entry['value'].toString()) ?? 0.0;
       }
 
-      totalDistanceDay = total;
+      totalDistanceDay = total/10000; //suppongo sia in cm
     } else {
       totalDistanceDay = 0;
     }
