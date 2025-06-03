@@ -35,14 +35,14 @@ class _CaloriesPageState extends State<CaloriesPage> {
             final monthCalories = caloriesProvider.totalCaloriesMonth ?? 0;
 
             String message = '';
-            if (dayCalories < 1000) {
-              message = 'You should burn more calories today!';  // QUI CHIARA
+            if (dayCalories < 300) {
+              message = 'A squirrel burns more calories than you. It\'s time to do a bit of exercise!';  // QUI CHIARA
+            } else if (dayCalories < 1000) {
+              message = 'A golden eagle burns more calories than you. Keep moving!';
             } else if (dayCalories < 2000) {
-              message = 'Nice effort, keep moving!';
-            } else if (dayCalories < 3300) {
-              message = 'Great job, you’re staying active!';
+              message = 'Great job, you\'re as active as a German Shepherd!';
             } else {
-              message = 'You are The Rock';
+              message = 'You\'re very close to what a tiger burns. You\'re going strong!';
             }
 
             return Column(

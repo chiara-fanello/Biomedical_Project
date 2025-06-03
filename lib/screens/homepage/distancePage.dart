@@ -38,11 +38,13 @@ class _DistancePageState extends State<DistancePage> {
             if (dayDistance < 1.0) {
               message = 'Let\'s go for a short walk!';
             } else if (dayDistance < 3.0) {
-              message = 'per te chiara';
+              message = 'Daily walk completed. Now start working out harder!';
             } else if (dayDistance < 8.0) {
-              message = '...per te chiara';
-            } else {
-              message = 'Yper et chiara';
+              message = 'Great job. You got up on the right foot!';
+            } else if (dayDistance < 15.0) {
+              message = 'Keep it up, and soon you will be able to participate in the New York Half Marathon';
+            }else {
+              message = "You're doing great! Watch out for lactic acid";
             }
 
             return Column(
