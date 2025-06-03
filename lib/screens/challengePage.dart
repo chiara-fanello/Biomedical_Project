@@ -23,11 +23,10 @@ import 'lessons/lesson7.dart';
 import 'lessons/lesson8.dart';
 import 'lessons/lesson9.dart';
 
-class Challengepage extends StatelessWidget{
+class Challengepage extends StatelessWidget {
+  final int itemCount = 20;
 
-  final int itemCount = 40;
-  
-    final List<Widget> _pages = [
+  final List<Widget> _pages = [
     Lesson1(),
     Lesson2(),
     Lesson3(),
@@ -54,59 +53,73 @@ class Challengepage extends StatelessWidget{
   Widget build(BuildContext context) {
     int lessons = Provider.of<GoalsProvider>(context).lessons();
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Challenges and Lessons'),
-      ),
+      appBar: AppBar(title: Text('Lessons')),
       body: ListView.builder(
         itemCount: itemCount,
         itemBuilder: (context, index) {
-          bool isChallenge = index % 2 == 0;
-          String title = isChallenge ? 'Challenge ${index ~/ 2 + 1}' : 'Lesson ${index ~/ 2 +1}';
-
+          String title = 'Lesson ${index + 1}';
           return Padding(
             padding: const EdgeInsets.all(8.0),
             child: GestureDetector(
               onTap: () {
-                if(!isChallenge && lessons >= index ~/ 2){
+                if (lessons > index) {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                      builder:  (context) => _pages[index ~/ 2]
-                    ),
-                  );
-                }
-                else if(isChallenge){
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder:  (context) => GoalsPage(id: index ~/ 2 +1)
-                    ),
+                    MaterialPageRoute(builder: (context) => _pages[index]),
                   );
                 }
               },
-              child: Container(
-                height: 100,
-                decoration: BoxDecoration(
-                  color: isChallenge ? const Color.fromARGB(255, 255, 165, 110) : const Color.fromARGB(255, 104, 232, 123),
-                  borderRadius: BorderRadius.circular(8),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black26,
-                      blurRadius: 4,
-                      offset: Offset(2, 2),
-                    ),
-                  ],
-                ),
-                child: Center(
-                  child: Text(
-                    title,
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      height: 100,
+                      padding: EdgeInsets.symmetric(horizontal: 8),
+                      decoration: BoxDecoration(
+                        color: const Color.fromARGB(255, 104, 232, 123),
+                        borderRadius: BorderRadius.circular(8),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black26,
+                            blurRadius: 4,
+                            offset: Offset(2, 2),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        children: [
+                          Text(
+                            title,
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                          ),
+                          SizedBox(height: 4),
+                          Text(
+                            Provider.of<GoalsProvider>(
+                              context,
+                              listen: false,
+                            ).getGoalString(index + 1),
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.black54,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
+                  SizedBox(width: 8),
+                  Icon(
+                    lessons > index
+                        ? Icons.lock_open_outlined
+                        : Icons.lock,
+                    size: 24,
+                    color: Colors.black,
+                  ),
+                ],
               ),
             ),
           );
@@ -115,5 +128,3 @@ class Challengepage extends StatelessWidget{
     );
   }
 }
-
-

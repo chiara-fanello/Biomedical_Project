@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/provider/caloriesDataProvider.dart';
 import 'package:flutter_application_1/provider/goalsProvider.dart';
+import 'package:flutter_application_1/screens/goalsPage.dart';
 import 'package:intl/intl.dart';
 import '../../provider/rhrDataProvider.dart';
 import '../../provider/sleepDataProvider.dart';
@@ -250,24 +251,33 @@ class _HomePageState extends State<HomePage> {
                   borderRadius: BorderRadius.circular(16),
                 ),
                 padding: const EdgeInsets.all(16),
-                child: Column(
-                  children: [
-                    Text(
-                      'Goal of the day',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(height: 4),
-                    Text(
-                      Provider.of<GoalsProvider>(
+                child: GestureDetector(
+                  onTap: () {
+                      Navigator.push(
                         context,
-                        listen: false,
-                      ).getGoalString(lessons + 1),
-                      style: TextStyle(fontSize: 16, color: Colors.black54),
-                    ),
-                  ],
+                        MaterialPageRoute(builder: (context) => GoalsPage(id: lessons + 1)),
+                      );
+                  },
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Goal of the day',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 8), // Spazio tra i testi
+                      Text(
+                        Provider.of<GoalsProvider>(
+                          context,
+                          listen: false,
+                        ).getGoalString(lessons + 1),
+                        style: TextStyle(fontSize: 16, color: Colors.black54),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
