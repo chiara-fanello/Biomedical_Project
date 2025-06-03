@@ -38,11 +38,11 @@ class _DistancePageState extends State<DistancePage> {
             if (dayDistance < 1.0) {
               message = 'Let\'s go for a short walk!';
             } else if (dayDistance < 3.0) {
-              message = 'Nice movement, keep going!';
+              message = 'per te chiara';
             } else if (dayDistance < 8.0) {
-              message = 'Solid distance covered today!';
+              message = '...per te chiara';
             } else {
-              message = 'You’re a walking machine!';
+              message = 'Yper et chiara';
             }
 
             return Column(
