@@ -2,81 +2,68 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/provider/goalsProvider.dart';
 import 'package:provider/provider.dart';
 
-
-class GoalsPage extends StatelessWidget {
+class GoalsPage extends StatefulWidget {
   final int id;
   const GoalsPage({Key? key, required this.id}) : super(key: key);
 
-  bool isPassed(int id, int active_lesson){
-    print("id: $id, active: $active_lesson");
-    if(id  == active_lesson + 1){
-      print("passato");
-      return true;
-      /*switch (id) {
-      case 1:
-        return 'Walk at least 6,000 steps per 3 consecutive days';
-      case 2:
-        return 'Go to bed before 11 PM and sleep at least 6 hours for 3 nights';
-      case 3:
-        return 'Burn at least 2,000 kcal in total through movement in one week';
-      case 4:
-        return 'Reduce night awakenings and improve sleep quality for 3 consecutive nights';
-      case 5:
-        return 'Reach a total of 50,000 steps in 7 days';
-      case 6:
-        return 'Cover at least 5 km in 3 days';
-      case 7:
-        return 'Walk or run at least 2 km every day for 4 days';
-      case 8:
-        return 'Burn at least 300 kcal through movement each day for 5 days';
-      case 9:
-        return 'Cover at least 20 km total over a week';
-      case 10:
-        return 'Lower your average resting heart rate compared to the previous week';
-      case 11:
-        return 'Maintain “low” or “normal” stress levels for at least 5 out of 7 days';
-      case 12:
-        return 'Burn more than 500 kcal in one day through physical activity';
-      case 13:
-        return 'Exceed 10,000 steps for 2 days this week';
-      case 14:
-        return 'Walk at least 2 days in a row without dropping below 8,000 steps';
-      case 15:
-        return 'Take a single walk of at least 4 km in one day';
-      case 16:
-        return 'Do a high-intensity activity that burns at least 200 kcal in under 30 minutes';
-      case 17:
-        return 'Sleep at least 7 hours for 3 nights in a row';
-      case 18:
-        return 'Maintain an average of at least 6.5 hours of sleep for 5 days';
-      case 19:
-        return 'Improve your weekly resting heart rate by at least 2 bpm';
-      case 20:
-        return 'Reduce night awakenings and improve sleep quality for 5 consecutive nights';
-        */
-    }
-      return false;
-  }
+  @override
+  _GoalsPageState createState() => _GoalsPageState();
+}
+
+class _GoalsPageState extends State<GoalsPage> {
+  bool pressed = false; 
 
   @override
   Widget build(BuildContext context) {
-    final active_lesson = Provider.of<GoalsProvider>(context).lessons();
-    String goalDescription = Provider.of<GoalsProvider>(context, listen: false).getGoalString(id);
-    print("id: $id, lesson: $active_lesson");
-    if(isPassed(id, active_lesson)){
-      Provider.of<GoalsProvider>(context, listen: false).setLessonsPassed();
-    }
+    final activeLesson = Provider.of<GoalsProvider>(context).lessons();
+    String goalDescription = Provider.of<GoalsProvider>(
+      context,
+      listen: false,
+    ).getGoalString(widget.id);
+
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Goal #$id'),
-      ),
-      
-    body:  Container(
+      appBar: AppBar(title: Text('Goal #${widget.id}')),
+      body: Container(
         padding: EdgeInsets.all(16.0),
-        color: Colors.transparent, // opzionale, per rendere tappabile l'intera area
-        child: Text(goalDescription),
+        color: Colors.transparent,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              goalDescription,
+              style: TextStyle(fontSize: 18),
+            ),
+            SizedBox(height: 20),
+            Text(
+              '"Self-analysis: reflect on the past few days. Have you achieved this goal?"',
+              style: TextStyle(fontSize: 16),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                if (widget.id == activeLesson + 1) {
+                  Provider.of<GoalsProvider>(
+                    context,
+                    listen: false,
+                  ).setLessonsPassed();
+                }
+                setState(() {
+                  pressed = true; 
+                });
+              },
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+
+              child: Text(''), 
+            ),
+            SizedBox(height: 20),
+            if (pressed)
+              Text(
+                'Congratulation! Goal completed!',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+          ],
+        ),
       ),
     );
-    
   }
 }
