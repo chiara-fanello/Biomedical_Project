@@ -6,7 +6,8 @@ class SleepDataProvider extends ChangeNotifier {
   List<SleepData> sleepData = [];
   List<WeeklySleepSummary> weeklySummaries = [];
 
-  Future<void> fetchSleepData(String day) async {
+  Future<void> fetchSleepData() async {
+    String day = '2025-05-05';
     final data = await ImpactRequest.fetchSleepData(day);
     print('Received data for day $day:\n$data');
 
@@ -35,6 +36,24 @@ class SleepDataProvider extends ChangeNotifier {
     } else {
       print('Invalid or incomplete response');
     }
+  }
+
+  String? getLastNightSleepDurationString() {
+    if (sleepData.isEmpty) return null;
+
+    final lastNight = sleepData.last;
+
+    if (lastNight.levelsData.isEmpty) return null;
+
+    final totalDuration = lastNight.levelsData.fold<Duration>(
+      Duration.zero,
+      (sum, segment) => sum + segment.duration,
+    );
+
+    final hours = totalDuration.inHours;
+    final minutes = totalDuration.inMinutes % 60;
+
+    return "${hours}h ${minutes.toString().padLeft(2, '0')}m";
   }
 
   Future<void> fetchSleepDataRange(String startDate, String endDate) async {

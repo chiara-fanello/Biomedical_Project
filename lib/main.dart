@@ -7,7 +7,6 @@ import 'provider/loginProvider.dart';
 import 'provider/sleepDataProvider.dart';
 import 'provider/stepDataProvider.dart';
 import 'package:provider/provider.dart';
-import 'provider/objectives.dart';
 import 'screens/loginPage.dart';
 import 'provider/rhrDataProvider.dart';
 

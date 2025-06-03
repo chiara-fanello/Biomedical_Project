@@ -31,13 +31,12 @@ class SleepBarChart extends StatelessWidget {
     final totalMinutes = endTime.difference(startTime).inMinutes;
 
     return Container(
-      color: const Color(0xFFF9FAFB),
       padding: const EdgeInsets.all(12),
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: SizedBox(
           width: totalMinutes * 2,
-          height: 180,
+          height: 40,
           child: CustomPaint(
             painter: _SleepBarChartPainter(
               segments: segments,

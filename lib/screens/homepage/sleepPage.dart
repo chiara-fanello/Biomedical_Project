@@ -33,7 +33,7 @@ class _SleepPageState extends State<SleepPage> {
           context,
           listen: false,
         );
-        await sleepProvider.fetchSleepData(widget.day);
+        await sleepProvider.fetchSleepData();
         await sleepProvider.fetchSleepDataRange(startDateStr, endDateStr);
       }),
       Future(() async {
@@ -45,6 +45,8 @@ class _SleepPageState extends State<SleepPage> {
       }),
     ]);
   }
+
+  // Tutto il resto (import, class SleepPage, ecc.) rimane invariato fino al build
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +68,6 @@ class _SleepPageState extends State<SleepPage> {
             return const Center(child: Text("No sleep data available."));
           }
 
-          // Calcolo media battito cardiaco a riposo (se dati disponibili)
           final restingHR = hrProvider.restingHeartRate;
           double restingHRValue = 0;
           if (restingHR != null && restingHR.data.isNotEmpty) {
@@ -90,51 +91,81 @@ class _SleepPageState extends State<SleepPage> {
               weeklySummaries.isNotEmpty
                   ? totalDuration ~/ weeklySummaries.length
                   : Duration.zero;
+          String stressLevel = "Basso";
+          if (restingHRValue > 65 && average.inHours < 6) {
+            stressLevel = "Alto";
+          } else if (restingHRValue > 60 || average.inHours < 6) {
+            stressLevel = "Moderato";
+          }
 
           return SingleChildScrollView(
             padding: const EdgeInsets.all(16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                RichText(
-                  text: TextSpan(
-                    text: "Sleep trend on ",
-                    style: Theme.of(context).textTheme.titleLarge,
-                    children: [
-                      TextSpan(
-                        text: formattedDate,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.blue.shade700,
-                          letterSpacing: 1.2,
-                        ),
-                      ),
-                    ],
+                Text(
+                  "Trend del sonno",
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
                   ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  "Data: $formattedDate",
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
                 ),
 
                 const SizedBox(height: 8),
-                SleepBarChart(segments: dailyData.levelsData),
-                const SizedBox(height: 16),
+                SizedBox(
+                  height: 200,
+                  child: SleepBarChart(segments: dailyData.levelsData),
+                ),
+
+                const SizedBox(height: 0),
                 if (weeklySummaries.isNotEmpty) ...[
                   Text(
                     "Andamento settimanale",
-                    style: Theme.of(context).textTheme.titleMedium,
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(height: 12),
                   SizedBox(
                     height: 130,
                     child: WeeklySleepBarChart(sleepSummaries: weeklySummaries),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 12),
                   Text(
-                    "Media settimanale: ${average.inHours}h ${average.inMinutes.remainder(60)}m",
-                    style: Theme.of(context).textTheme.bodyMedium,
+                    "On average over the past seven days, you slept for:  ${average.inHours}h ${average.inMinutes.remainder(60)}m",
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      fontStyle: FontStyle.italic,
+                    ),
                   ),
-                  const SizedBox(height: 24),
-                  // Widget per battito cardiaco a riposo
-                  RestingHeartRateCard(restingHeartRate: restingHRValue),
                 ],
+
+                const SizedBox(height: 16),
+                Text(
+                  "Dati fisiologici",
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                RestingHeartRateCard(restingHeartRate: restingHRValue),
+                const SizedBox(height: 16), // Spazio per futura Card
+
+                const SizedBox(height: 16),
+                Text(
+                  "Stress Level",
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                StressLevelCard(level: stressLevel),
+                const SizedBox(height: 16), // Spazio
               ],
             ),
           );
@@ -155,7 +186,7 @@ class RestingHeartRateCard extends StatelessWidget {
       color: Colors.red.shade50,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+        padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 20),
         child: Row(
           children: [
             Icon(Icons.favorite, color: Colors.redAccent, size: 36),
@@ -178,6 +209,70 @@ class RestingHeartRateCard extends StatelessWidget {
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                       color: Colors.redAccent,
                       fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class StressLevelCard extends StatelessWidget {
+  final String level;
+
+  const StressLevelCard({super.key, required this.level});
+
+  @override
+  Widget build(BuildContext context) {
+    Color color;
+    IconData icon;
+
+    switch (level) {
+      case "High":
+        color = Colors.redAccent;
+        icon = Icons.warning;
+        break;
+      case "Moderate":
+        color = Colors.orange;
+        icon = Icons.error_outline;
+        break;
+      default:
+        color = const Color(0xFF2E7D32); // Verde più vivido
+        icon = Icons.check_circle_outline;
+    }
+
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      color: color.withOpacity(0.1),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+        child: Row(
+          children: [
+            Icon(icon, color: color, size: 36),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Estimated Stress Level',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: color,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 0.8,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    level.toUpperCase(),
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      color: color,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1.2,
                     ),
                   ),
                 ],

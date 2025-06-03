@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/provider/goalsProvider.dart';
-import 'package:flutter_application_1/screens/goalsPage.dart';
+import 'package:intl/intl.dart';
+import '../../provider/rhrDataProvider.dart';
+import '../../provider/sleepDataProvider.dart';
 import 'package:provider/provider.dart';
 import 'dart:math';
 import 'package:flutter/services.dart';
@@ -36,7 +38,40 @@ class _HomePageState extends State<HomePage> {
         listen: false,
       );
       stepProvider.fetchDayNumSteps();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _loadData();
+      });
       _initialized = true;
+    }
+  }
+
+  // Chiamata al provider per ottenere i dati del sonno
+  Future<void> _loadData() async {
+    final todayStr = DateFormat('yyyy-MM-dd').format(DateTime.now());
+    final startDate = DateTime.now().subtract(const Duration(days: 6));
+    final startDateStr = DateFormat('yyyy-MM-dd').format(startDate);
+
+    try {
+      await Future.wait([
+        Provider.of<SleepDataProvider>(context, listen: false).fetchSleepData(),
+        Provider.of<SleepDataProvider>(
+          context,
+          listen: false,
+        ).fetchSleepDataRange(startDateStr, todayStr),
+        Provider.of<RestingHeartRateProvider>(
+          context,
+          listen: false,
+        ).fetchRestingHeartRate(todayStr),
+      ]);
+    } catch (e) {
+      // Gestisci eventuali errori qui (log, snackBar, ecc.)
+      print('Errore caricamento dati: $e');
+    } finally {
+      if (mounted) {
+        setState(() {
+          var _isLoading = false;
+        });
+      }
     }
   }
 
@@ -86,6 +121,10 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final sleepDuration =
+        context.watch<SleepDataProvider>().getLastNightSleepDurationString() ??
+        '...';
+
     int lessons = Provider.of<GoalsProvider>(context).lessons();
     return Scaffold(
       appBar: AppBar(title: Text('Welcome!')),
@@ -127,15 +166,16 @@ class _HomePageState extends State<HomePage> {
                             );
                           },
                         ),
+
                         _buildDataBox(
                           label: 'Sleep',
-                          value: '...h',
+                          value: sleepDuration,
                           color: Colors.green,
                           onTap: () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (_) => SleepPage(day: '2025-03-27'),
+                                builder: (_) => SleepPage(day: '2025-03-25'),
                               ),
                             );
                           },
