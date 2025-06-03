@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/provider/goalsProvider.dart';
 import 'package:provider/provider.dart';
-import 'goalsPage.dart';
 import 'lessons/lesson1.dart';
 import 'lessons/lesson10.dart';
 import 'lessons/lesson11.dart';
@@ -62,14 +61,14 @@ class Challengepage extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: GestureDetector(
               onTap: () {
-                if (lessons > index) {
+                if (lessons > index) {  // Lesson lock if the objective has not yet been completed
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => _pages[index]),
                   );
                 }
               },
-              child: Row(
+              child: Row(   // Lesson box creation + lock/unlock status
                 children: [
                   Expanded(
                     child: Container(

@@ -268,7 +268,7 @@ class _HomePageState extends State<HomePage> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(height: 8), // Spazio tra i testi
+                      SizedBox(height: 8), 
                       Text(
                         Provider.of<GoalsProvider>(
                           context,

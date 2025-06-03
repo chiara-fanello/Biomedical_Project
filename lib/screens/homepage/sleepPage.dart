@@ -36,12 +36,20 @@ class SleepPage extends StatelessWidget {
           final lastNightDuration = sleepProvider.getLastNightSleepDuration();
           String sleepQualityMessage = "Sleep duration not available";
           if (lastNightDuration != null) {
-            if (lastNightDuration.inHours >= 8) {
-              sleepQualityMessage = "You slept a lot! Great rest!";
-            } else if (lastNightDuration.inHours >= 6) {
-              sleepQualityMessage = "Average sleep duration.";
+            if (lastNightDuration.inHours < 4) {
+              sleepQualityMessage = "Your body is asking for help — even lions rest before they hunt.";
+            } else if (lastNightDuration.inHours < 5) {
+              sleepQualityMessage = "Enduring isn't strength. Recovering is power.";
+            } else if (lastNightDuration.inHours < 6) {
+              sleepQualityMessage = "You're not a machine. Sleep to shine while awake.";
+            } else if (lastNightDuration.inHours < 7) {
+              sleepQualityMessage = "The foundation is there. Now level up — even in rest.";
+            } else if (lastNightDuration.inHours < 8) {
+              sleepQualityMessage = "Recharged, centered, ready. Rest makes you unstoppable.";
+            } else if (lastNightDuration.inHours < 9) {
+              sleepQualityMessage = "When sleep runs deep, dreams turn into plans.";
             } else {
-              sleepQualityMessage = "You slept little, try to rest more.";
+              sleepQualityMessage = "Today you chose to heal. Rest is invisible training.";
             }
           }
 
