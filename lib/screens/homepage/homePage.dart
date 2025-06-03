@@ -26,7 +26,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   bool _initialized = false;
-  final String day = '2025-05-17';
+  final String day = '2025-05-14';
 
   Future<List<List<dynamic>>> loadCsvData() async {
     final raw = await rootBundle.loadString('assets/DoYouKnow.csv');
@@ -50,7 +50,7 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  // Chiamata al provider per ottenere i dati del sonno
+  // Call to provider to fetch sleep data
   Future<void> _loadData() async {
     final referenceDay = DateTime.parse(day);
     final todayStr = DateFormat('yyyy-MM-dd').format(referenceDay);
@@ -74,8 +74,8 @@ class _HomePageState extends State<HomePage> {
         ).fetchRestingHeartRate(day),
       ]);
     } catch (e) {
-      // Gestisci eventuali errori qui (log, snackBar, ecc.)
-      print('Errore caricamento dati: $e');
+      // Handle potential errors here (log, snackBar, etc.)
+      print('Data loading error: $e');
     }
   }
 
@@ -134,7 +134,7 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(title: Text('Welcome!')),
 
       body: SingleChildScrollView(
-        // Aggiunto SingleChildScrollView
+        // Added SingleChildScrollView
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -215,8 +215,8 @@ class _HomePageState extends State<HomePage> {
                           label: 'Distance',
                           value:
                               distanceProvider.totalDistanceDay !=
-                                      null //altrimenti potevo usare come sopra '??'
-                                  ? '${distanceProvider.totalDistanceDay!.toStringAsFixed(2)} km' //per avere solo due decimali
+                                      null // otherwise could use '??' as above
+                                  ? '${distanceProvider.totalDistanceDay!.toStringAsFixed(2)} km' // to show only two decimals
                                   : '... km',
                           color: Colors.purple,
                           onTap: () {
@@ -316,29 +316,29 @@ class _HomePageState extends State<HomePage> {
                             ConnectionState.waiting) {
                           return const CircularProgressIndicator();
                         } else if (snapshot.hasError) {
-                          return Text('Errore nel CSV');
+                          return Text('CSV error');
                         } else if (!snapshot.hasData ||
                             snapshot.data!.isEmpty) {
-                          return Text('CSV vuoto');
+                          return Text('Empty CSV');
                         }
 
-                        final righe = snapshot.data!;
-                        final randomIndex = Random().nextInt(righe.length);
-                        final riga = righe[randomIndex];
-                        final frase = riga[0];
-                        final spiegazione = riga[1];
+                        final rows = snapshot.data!;
+                        final randomIndex = Random().nextInt(rows.length);
+                        final row = rows[randomIndex];
+                        final phrase = row[0];
+                        final explanation = row[1];
 
                         return Column(
                           children: [
                             Text(
-                              frase,
+                              phrase,
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 16,
                               ),
                             ),
                             SizedBox(height: 8),
-                            Text(spiegazione, style: TextStyle(fontSize: 14)),
+                            Text(explanation, style: TextStyle(fontSize: 14)),
                           ],
                         );
                       },

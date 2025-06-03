@@ -25,11 +25,12 @@ class SleepBarChart extends StatelessWidget {
     if (segments.isEmpty) {
       return Center(
         child: Text(
-          'No sleep Data Available',
+          'No sleep data available',
           style: TextStyle(color: Colors.grey, fontStyle: FontStyle.italic),
         ),
       );
     }
+
     final startTime = segments
         .map((s) => s.start)
         .reduce((a, b) => a.isBefore(b) ? a : b);
@@ -38,25 +39,27 @@ class SleepBarChart extends StatelessWidget {
         .reduce((a, b) => a.isAfter(b) ? a : b);
     final totalMinutes = endTime.difference(startTime).inMinutes;
 
-    // Altrimenti, mostra il grafico normalmente
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final chartWidth = constraints.maxWidth;
 
-    return Container(
-      padding: const EdgeInsets.all(12),
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: SizedBox(
-          width: totalMinutes * 2,
-          height: 40,
-          child: CustomPaint(
-            painter: _SleepBarChartPainter(
-              segments: segments,
-              startTime: startTime,
-              endTime: endTime,
-              stageColors: stageColors,
+        return Container(
+          padding: const EdgeInsets.all(12),
+          child: SizedBox(
+            width: chartWidth,
+            height: 120,
+            child: CustomPaint(
+              painter: _SleepBarChartPainter(
+                segments: segments,
+                startTime: startTime,
+                endTime: endTime,
+                stageColors: stageColors,
+                chartWidth: chartWidth,
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
@@ -66,12 +69,14 @@ class _SleepBarChartPainter extends CustomPainter {
   final DateTime startTime;
   final DateTime endTime;
   final Map<SleepStage, Color> stageColors;
+  final double chartWidth;
 
   _SleepBarChartPainter({
     required this.segments,
     required this.startTime,
     required this.endTime,
     required this.stageColors,
+    required this.chartWidth,
   });
 
   final stageOrder = [
@@ -85,8 +90,8 @@ class _SleepBarChartPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final paint = Paint();
     final totalMinutes = endTime.difference(startTime).inMinutes;
-    final xOffset = 60.0;
-    final chartWidth = size.width - xOffset;
+    final xOffset = 27.0;
+    final effectiveChartWidth = chartWidth - xOffset;
     final rowHeight = (size.height - 65) / stageOrder.length;
 
     final labelStyle = const TextStyle(
@@ -119,7 +124,7 @@ class _SleepBarChartPainter extends CustomPainter {
       textPainter.layout();
       textPainter.paint(
         canvas,
-        Offset(0, y + rowHeight / 2 - textPainter.height / 2),
+        Offset(-16, y + rowHeight / 2 - textPainter.height / 2),
       );
     }
 
@@ -132,8 +137,9 @@ class _SleepBarChartPainter extends CustomPainter {
       final startMinutes = segment.start.difference(startTime).inMinutes;
       final endMinutes = segment.end.difference(startTime).inMinutes;
 
-      final left = xOffset + (startMinutes / totalMinutes) * chartWidth;
-      final right = xOffset + (endMinutes / totalMinutes) * chartWidth;
+      final left =
+          xOffset + (startMinutes / totalMinutes) * effectiveChartWidth;
+      final right = xOffset + (endMinutes / totalMinutes) * effectiveChartWidth;
 
       final rrect = RRect.fromRectAndRadius(
         Rect.fromLTRB(left, yTop, right, yTop + barHeight),

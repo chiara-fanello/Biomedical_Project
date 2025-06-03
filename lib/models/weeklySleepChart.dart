@@ -17,7 +17,7 @@ class WeeklySleepBarChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (sleepSummaries.length != 7) {
-      return const Center(child: Text("Dati incompleti per la settimana."));
+      return const Center(child: Text("Incomplete data for the week."));
     }
     return BarChart(
       BarChartData(
@@ -29,7 +29,7 @@ class WeeklySleepBarChart extends StatelessWidget {
             sideTitles: SideTitles(
               showTitles: true,
               reservedSize: 30,
-              interval: 3, // <-- ogni 3 ore
+              interval: 3, // <-- interval of 3 hours
               getTitlesWidget: (value, _) {
                 return Text("${value.toInt()}h");
               },
@@ -62,15 +62,16 @@ class WeeklySleepBarChart extends StatelessWidget {
           ),
           topTitles: AxisTitles(
             sideTitles: SideTitles(showTitles: false),
-          ), // niente titoli sopra
+          ), // no titles on top
           rightTitles: AxisTitles(
             sideTitles: SideTitles(showTitles: false),
-          ), // niente titoli a destra
+          ), // no titles on right
         ),
         gridData: FlGridData(
           show: true,
           drawVerticalLine: false,
-          horizontalInterval: 3, // griglia ogni 3 ore per allineare con Y
+          horizontalInterval:
+              3, // horizontal grid lines every 3 hours for alignment with Y axis
           getDrawingHorizontalLine: (value) {
             return FlLine(color: Colors.grey.shade300, strokeWidth: 1);
           },

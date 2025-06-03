@@ -22,7 +22,7 @@ class SleepData {
               .toList();
     }
 
-    // Parse the date (format: MM-dd) and assume current year
+    // Parse date in MM-dd format
     final dateFormat = DateFormat('MM-dd');
     final parsedDate = dateFormat.parse(json['dateOfSleep']);
     final fullDate = DateTime(
@@ -37,6 +37,8 @@ class SleepData {
       levelsData: levelsData,
     );
   }
+
+  // Factory constructor to return an empty instance
   factory SleepData.empty() {
     return SleepData(
       dateOfSleep: DateTime.now(),
@@ -96,24 +98,24 @@ class SleepSegment {
   factory SleepSegment.fromJson(Map<String, dynamic> json) {
     final String level = (json['level'] as String).toLowerCase();
 
-    // Map JSON level string to SleepStage enum
+    // Map string level to SleepStage enum
     final SleepStage mappedStage = switch (level) {
       'light' => SleepStage.light,
       'deep' => SleepStage.deep,
       'rem' => SleepStage.rem,
       'wake' => SleepStage.awake,
-      _ => SleepStage.light, // Safe fallback
+      _ => SleepStage.light, // Fallback to light
     };
 
     final format = DateFormat(
       'MM-dd HH:mm:ss',
-    ); // Make sure this matches your data format
+    ); // Match this to your data format
 
     late DateTime start;
     late DateTime end;
 
     try {
-      // Handle both possible data structures
+      // Handle both start/end and dateTime/seconds structures
       if (json.containsKey('start') && json.containsKey('end')) {
         start = format.parse(json['start']);
         end = format.parse(json['end']);
@@ -121,7 +123,7 @@ class SleepSegment {
         start = format.parse(json['dateTime']);
         end = start.add(Duration(seconds: json['seconds']));
       } else {
-        throw FormatException('Missing keys in JSON');
+        throw FormatException('Missing expected keys in JSON');
       }
 
       if (end.isBefore(start)) {
@@ -130,7 +132,7 @@ class SleepSegment {
 
       return SleepSegment(stage: mappedStage, start: start, end: end);
     } catch (e) {
-      // Print detailed error for debugging
+      // Print detailed error message for debugging
       print('Error parsing SleepSegment: $e\nData: $json');
       throw FormatException('Error parsing SleepSegment: $e - $json');
     }
@@ -162,7 +164,7 @@ List<WeeklySleepSummary> parseWeeklySleepData(Map<String, dynamic> json) {
 
         if (sleepData is! Map<String, dynamic>) {
           print(
-            'Ignorato elemento con data $dateStr: sleepData non è una mappa.',
+            'Skipped element for date $dateStr: sleepData is not a valid map.',
           );
           continue;
         }
@@ -175,7 +177,7 @@ List<WeeklySleepSummary> parseWeeklySleepData(Map<String, dynamic> json) {
 
         summaries.add(WeeklySleepSummary(date: date, totalSleep: totalSleep));
       } catch (e) {
-        print('Errore parsing singolo elemento: $e\nItem: $item');
+        print('Error parsing single element: $e\nItem: $item');
       }
     }
   }
