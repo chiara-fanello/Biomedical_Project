@@ -217,7 +217,11 @@ class _HomePageState extends State<HomePage> {
                 );
               },
             ),
-            const SizedBox(height: 30),
+
+            const SizedBox(height: 5),
+            Center(child:Text('If you don\'t see values, update manually by clicking the boxes', style: TextStyle(fontSize: 13, fontStyle: FontStyle.italic) )),
+            const SizedBox(height:5),
+
             Padding(
               padding: const EdgeInsets.all(16),
               child: Container(
@@ -249,7 +253,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
 
-            const SizedBox(height: 30),
+            //const SizedBox(height: 5),
 
             Padding(
               padding: const EdgeInsets.all(16),

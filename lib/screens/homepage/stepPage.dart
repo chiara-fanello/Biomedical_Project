@@ -8,16 +8,13 @@ class StepPage extends StatefulWidget {
 }
 
 class _StepPageState extends State<StepPage> {
-
   @override
   void initState() {
     super.initState();
     final provider = Provider.of<StepDataProvider>(context, listen: false);
-
     provider.fetchDayNumSteps();
     provider.fetchWeekNumSteps();
     provider.fetchMonthNumSteps();
-    print(provider.totalStepsMonth);
   }
 
   @override
@@ -35,15 +32,21 @@ class _StepPageState extends State<StepPage> {
             final weekSteps = stepProvider.totalStepsWeek ?? 0;
             final monthSteps = stepProvider.totalStepsMonth ?? 0;
 
+            // Calcolo CO₂ risparmiata
+            final double stepLengthMeters = 0.4;
+            final double distanceKm = (daySteps * stepLengthMeters) / 1000;
+            final double co2PerKm = 115; // grammi/km
+            final double co2Saved = distanceKm * co2PerKm;
+
             String message = '';
             if (daySteps < 1000) {
-              message = 'Walk a little is good for your health'; 
+              message = 'Walk a little is good for your health';
             } else if (daySteps < 5000) {
-              message = 'trallalero trallalà'; 
+              message = 'trallalero trallalà';
             } else if (daySteps < 10000) {
-              message = 'You walked enough, rest a little!'; 
+              message = 'You walked enough, rest a little!';
             } else {
-              message = 'tung tung tung saur'; 
+              message = 'tung tung tung saur';
             }
 
             return Column(
@@ -55,18 +58,18 @@ class _StepPageState extends State<StepPage> {
                 SizedBox(height: 12),
                 StepBox(title: 'Avg monthly steps', steps: monthSteps),
                 SizedBox(height: 24),
-                Container(
-                  padding: EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    color: Colors.blue.shade50,
-                    border: Border.all(color: Colors.blue),
-                  ),
-                  child: Text(
-                    message,
-                    style: TextStyle(fontSize: 18),
-                  ),
-                )
+                _InfoBox(
+                  color: Colors.blue.shade50,
+                  borderColor: Colors.blue,
+                  text: message,
+                ),
+                SizedBox(height: 16),
+                _InfoBox(
+                  color: Colors.green.shade50,
+                  borderColor: Colors.green,
+                  text:
+                      'Estimated CO₂ saved by walking today compared to a car travel: \n ${co2Saved.toStringAsFixed(2)} g',
+                ),
               ],
             );
           },
@@ -106,6 +109,34 @@ class StepBox extends StatelessWidget {
                   fontWeight: FontWeight.w600,
                   color: Colors.black)),
         ],
+      ),
+    );
+  }
+}
+
+class _InfoBox extends StatelessWidget {
+  final Color color;
+  final Color borderColor;
+  final String text;
+
+  const _InfoBox({
+    required this.color,
+    required this.borderColor,
+    required this.text,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        color: Colors.green,
+        border: Border.all(color: borderColor),
+      ),
+      child: Text(
+        text,
+        style: TextStyle(fontSize: 16),
       ),
     );
   }
