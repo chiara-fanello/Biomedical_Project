@@ -25,6 +25,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   bool _initialized = false;
+  final String day = '2025-05-17';
 
   Future<List<List<dynamic>>> loadCsvData() async {
     final raw = await rootBundle.loadString('assets/DoYouKnow.csv');
@@ -50,7 +51,6 @@ class _HomePageState extends State<HomePage> {
 
   // Chiamata al provider per ottenere i dati del sonno
   Future<void> _loadData() async {
-    String day = '2025-05-11';
     final referenceDay = DateTime.parse(day);
     final todayStr = DateFormat('yyyy-MM-dd').format(referenceDay);
     final startDateStr = DateFormat(
@@ -70,7 +70,7 @@ class _HomePageState extends State<HomePage> {
         Provider.of<RestingHeartRateProvider>(
           context,
           listen: false,
-        ).fetchRestingHeartRate(todayStr),
+        ).fetchRestingHeartRate(day),
       ]);
     } catch (e) {
       // Gestisci eventuali errori qui (log, snackBar, ecc.)
@@ -151,8 +151,18 @@ class _HomePageState extends State<HomePage> {
             ),
             const SizedBox(height: 16),
 
-            Consumer3<StepDataProvider, DistanceDataProvider, CaloriesDataProvider>(
-              builder: (context, stepProvider, distanceProvider, caloriesProvider, _) {
+            Consumer3<
+              StepDataProvider,
+              DistanceDataProvider,
+              CaloriesDataProvider
+            >(
+              builder: (
+                context,
+                stepProvider,
+                distanceProvider,
+                caloriesProvider,
+                _,
+              ) {
                 return Column(
                   children: [
                     Row(
@@ -178,7 +188,7 @@ class _HomePageState extends State<HomePage> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (_) => SleepPage(day: '2025-03-25'),
+                                builder: (_) => SleepPage(day: day),
                               ),
                             );
                           },
@@ -189,7 +199,9 @@ class _HomePageState extends State<HomePage> {
                       children: [
                         _buildDataBox(
                           label: 'Calories',
-                          value: caloriesProvider.totalCaloriesDay?.toString() ?? '... cal',
+                          value:
+                              caloriesProvider.totalCaloriesDay?.toString() ??
+                              '... cal',
                           color: Colors.orange,
                           onTap: () {
                             Navigator.push(
@@ -200,9 +212,11 @@ class _HomePageState extends State<HomePage> {
                         ),
                         _buildDataBox(
                           label: 'Distance',
-                          value: distanceProvider.totalDistanceDay != null //altrimenti potevo usare come sopra '??'
-                          ? '${distanceProvider.totalDistanceDay!.toStringAsFixed(2)} km' //per avere solo due decimali
-                          : '... km',
+                          value:
+                              distanceProvider.totalDistanceDay !=
+                                      null //altrimenti potevo usare come sopra '??'
+                                  ? '${distanceProvider.totalDistanceDay!.toStringAsFixed(2)} km' //per avere solo due decimali
+                                  : '... km',
                           color: Colors.purple,
                           onTap: () {
                             Navigator.push(
@@ -219,8 +233,13 @@ class _HomePageState extends State<HomePage> {
             ),
 
             const SizedBox(height: 5),
-            Center(child:Text('If you don\'t see values, update manually by clicking the boxes', style: TextStyle(fontSize: 13, fontStyle: FontStyle.italic) )),
-            const SizedBox(height:5),
+            Center(
+              child: Text(
+                'If you don\'t see values, update manually by clicking the boxes',
+                style: TextStyle(fontSize: 13, fontStyle: FontStyle.italic),
+              ),
+            ),
+            const SizedBox(height: 5),
 
             Padding(
               padding: const EdgeInsets.all(16),
@@ -254,7 +273,6 @@ class _HomePageState extends State<HomePage> {
             ),
 
             //const SizedBox(height: 5),
-
             Padding(
               padding: const EdgeInsets.all(16),
               child: Container(

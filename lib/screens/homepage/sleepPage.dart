@@ -20,7 +20,10 @@ class SleepPage extends StatelessWidget {
         builder: (context, sleepProvider, hrProvider, _) {
           final sleepData = sleepProvider.sleepData;
           final weeklySummaries = sleepProvider.weeklySummaries;
-
+          print('Checking for problems:');
+          for (var summary in weeklySummaries) {
+            print(summary);
+          }
           ///////////////////////////////////////
           /// IF PER CHIARA
           ///                ///
@@ -77,23 +80,40 @@ class SleepPage extends StatelessWidget {
             List<WeeklySleepSummary> originalSummaries,
             String referenceDay,
           ) {
-            final manualDate = DateTime.parse(day);
+            print('Original summaries:');
+            for (var e in originalSummaries) {
+              print('Date: ${e.date}, Sleep: ${e.totalSleep}');
+            }
+
+            final manualDate = DateTime.parse(referenceDay);
             final startOfWeek = manualDate.subtract(
               Duration(days: manualDate.weekday - 1),
             );
+            final dateFormat = DateFormat('yyyy-MM-dd');
+
             final Map<String, WeeklySleepSummary> map = {
               for (var e in originalSummaries)
-                DateFormat('yyyy-MM-dd').format(e.date): e,
+                dateFormat
+                    .format(DateTime(e.date.year, e.date.month, e.date.day)): e,
             };
 
             return List.generate(7, (index) {
               final date = startOfWeek.add(Duration(days: index));
-              final key = DateFormat('yyyy-MM-dd').format(date);
+              final key = dateFormat.format(
+                DateTime(date.year, date.month, date.day),
+              );
               return map[key] ??
                   WeeklySleepSummary(date: date, totalSleep: Duration.zero);
             });
           }
 
+          final completedWeekData = completedWeek(weeklySummaries, day);
+          print("Completed week data:");
+          for (var w in completedWeekData) {
+            print(
+              "${DateFormat('yyyy-MM-dd').format(w.date)}: ${w.totalSleep.inMinutes} min",
+            );
+          }
           return SingleChildScrollView(
             padding: const EdgeInsets.all(16.0),
             child: Column(
@@ -169,7 +189,7 @@ class SleepPage extends StatelessWidget {
                   SizedBox(
                     height: 130,
                     child: WeeklySleepBarChart(
-                      sleepSummaries: completedWeek(weeklySummaries, day),
+                      sleepSummaries: completedWeekData,
                     ),
                   ),
                   const SizedBox(height: 12),

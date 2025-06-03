@@ -16,6 +16,9 @@ class WeeklySleepBarChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (sleepSummaries.length != 7) {
+      return const Center(child: Text("Dati incompleti per la settimana."));
+    }
     return BarChart(
       BarChartData(
         alignment: BarChartAlignment.spaceAround,
@@ -113,7 +116,7 @@ class WeeklySleepBarChart extends StatelessWidget {
               final duration = sleepSummaries[group.x].totalSleep;
               final formatted = formatDurationAsHHmm(duration);
               return BarTooltipItem(
-                "$formatted",
+                formatted,
                 const TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,

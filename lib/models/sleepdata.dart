@@ -156,14 +156,27 @@ List<WeeklySleepSummary> parseWeeklySleepData(Map<String, dynamic> json) {
 
   if (json['status'] == 'success' && json['data'] != null) {
     for (var item in json['data']) {
-      final dateStr = item['date'] as String;
-      final sleepData = item['data'];
-      final durationMs = (sleepData['duration'] as num).toInt();
+      try {
+        final dateStr = item['date'] as String;
+        final sleepData = item['data'];
 
-      final date = DateTime.parse(dateStr);
-      final totalSleep = Duration(milliseconds: durationMs);
+        if (sleepData is! Map<String, dynamic>) {
+          print(
+            'Ignorato elemento con data $dateStr: sleepData non è una mappa.',
+          );
+          continue;
+        }
 
-      summaries.add(WeeklySleepSummary(date: date, totalSleep: totalSleep));
+        final durationRaw = sleepData['duration'];
+        final durationMs = (durationRaw is double) ? durationRaw.toInt() : 0;
+
+        final date = DateTime.parse(dateStr);
+        final totalSleep = Duration(milliseconds: durationMs);
+
+        summaries.add(WeeklySleepSummary(date: date, totalSleep: totalSleep));
+      } catch (e) {
+        print('Errore parsing singolo elemento: $e\nItem: $item');
+      }
     }
   }
 
