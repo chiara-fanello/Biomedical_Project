@@ -75,7 +75,7 @@ class Challengepage extends StatelessWidget {
                       height: 100,
                       padding: EdgeInsets.symmetric(horizontal: 8),
                       decoration: BoxDecoration(
-                        color: const Color.fromARGB(255, 104, 232, 123),
+                        color:Colors.deepPurple[50],
                         borderRadius: BorderRadius.circular(8),
                         boxShadow: [
                           BoxShadow(

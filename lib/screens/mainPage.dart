@@ -47,7 +47,7 @@ class _MainPageState extends State<MainPage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.auto_stories_outlined),
             activeIcon: Icon(Icons.auto_stories),
-            label: 'Challenge',
+            label: 'Lessons',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.emoji_events_outlined),

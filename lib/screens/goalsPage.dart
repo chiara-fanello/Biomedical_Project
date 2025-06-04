@@ -39,27 +39,31 @@ class _GoalsPageState extends State<GoalsPage> {
               style: TextStyle(fontSize: 16),
             ),
             SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                if (widget.id == activeLesson + 1) {
-                  Provider.of<GoalsProvider>(
-                    context,
-                    listen: false,
-                  ).setLessonsPassed();
-                }
-                setState(() {
-                  pressed = true; 
-                });
-              },
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
-
-              child: Text(''), 
+            Align(
+              alignment: Alignment.center,
+              child: ElevatedButton(
+                onPressed: () {
+                  if (widget.id == activeLesson + 1) {
+                    Provider.of<GoalsProvider>(
+                      context,
+                      listen: false,
+                    ).setLessonsPassed();
+                  }
+                  setState(() {
+                    pressed = true; 
+                  });
+                },
+                style: ElevatedButton.styleFrom(backgroundColor:Colors.deepPurple),
+                
+                child: Text(''), 
+              ),
             ),
             SizedBox(height: 20),
             if (pressed)
               Text(
                 'Congratulation! Goal completed!',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                
               ),
           ],
         ),
