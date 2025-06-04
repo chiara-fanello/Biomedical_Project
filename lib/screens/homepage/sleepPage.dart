@@ -276,7 +276,7 @@ class RestingHeartRateCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Battito cardiaco a riposo',
+                    'Resting heart rate',
                     style: Theme.of(
                       context,
                     ).textTheme.titleMedium?.copyWith(color: Colors.redAccent),
@@ -285,7 +285,7 @@ class RestingHeartRateCard extends StatelessWidget {
                   Text(
                     restingHeartRate > 0
                         ? '${restingHeartRate.toStringAsFixed(0)} bpm'
-                        : 'Dati non disponibili',
+                        : 'Data not available',
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                       color: Colors.redAccent,
                       fontWeight: FontWeight.bold,

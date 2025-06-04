@@ -3,7 +3,6 @@ import 'package:flutter_application_1/screens/challengePage.dart';
 import 'homepage/homePage.dart';
 import 'challengePage.dart';
 import 'profile/profilePage.dart';
-import 'trophyPage.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -18,7 +17,6 @@ class _MainPageState extends State<MainPage> {
   final List<Widget> _pages = [
     HomePage(),
     Challengepage(),
-    TrophyPage(),
     ProfilePage(),
   ];
 
@@ -48,11 +46,6 @@ class _MainPageState extends State<MainPage> {
             icon: Icon(Icons.auto_stories_outlined),
             activeIcon: Icon(Icons.auto_stories),
             label: 'Lessons',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.emoji_events_outlined),
-            activeIcon: Icon(Icons.emoji_events),
-            label: 'Trophies',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person_outline),
