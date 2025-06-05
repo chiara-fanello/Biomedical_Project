@@ -55,7 +55,7 @@ class _GoalsPageState extends State<GoalsPage> {
                 },
                 style: ElevatedButton.styleFrom(backgroundColor:Colors.deepPurple),
                 
-                child: Text(''), 
+                child: Text('Tap me if you’ve completed your goal'), 
               ),
             ),
             SizedBox(height: 20),

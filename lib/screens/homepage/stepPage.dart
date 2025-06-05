@@ -39,14 +39,18 @@ class _StepPageState extends State<StepPage> {
             final double co2Saved = distanceKm * co2PerKm;
 
             String message = '';
-            if (daySteps < 1000) {
-              message = 'Walk a little is good for your health';
+            if (daySteps < 3000) {
+              message = 'Your story hasn’t started yet. Get up, move, and make today count.';
             } else if (daySteps < 5000) {
-              message = 'trallalero trallalà';
-            } else if (daySteps < 10000) {
-              message = 'You walked enough, rest a little!';
+              message = 'You’ve taken a few steps. Now keep the fire alive—your best self is waiting';
+            } else if (daySteps < 8000) {
+              message = 'Momentum is building. You’re walking toward a stronger you.';
+            } else if(daySteps < 11000){
+              message = 'You’re unstoppable. You’ve moved your body, and your mind followed.';
+            } else if(daySteps < 15000){
+              message = 'You\'re fierce. Energy, focus, and fire in motion.';
             } else {
-              message = 'tung tung tung saur';
+              message = 'You are a force of nature. Tireless, relentless, alive.';
             }
 
             return Column(
