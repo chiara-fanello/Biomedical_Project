@@ -9,7 +9,6 @@ import '../../models/sleepChartWidget.dart';
 
 class SleepPage extends StatelessWidget {
   final String day;
-
   const SleepPage({super.key, required this.day});
 
   @override
@@ -37,19 +36,26 @@ class SleepPage extends StatelessWidget {
           String sleepQualityMessage = "Sleep duration not available";
           if (lastNightDuration != null) {
             if (lastNightDuration.inHours < 4) {
-              sleepQualityMessage = "Your body is asking for help — even lions rest before they hunt.";
+              sleepQualityMessage =
+                  "Your body is asking for help — even lions rest before they hunt.";
             } else if (lastNightDuration.inHours < 5) {
-              sleepQualityMessage = "Enduring isn't strength. Recovering is power.";
+              sleepQualityMessage =
+                  "Enduring isn't strength. Recovering is power.";
             } else if (lastNightDuration.inHours < 6) {
-              sleepQualityMessage = "You're not a machine. Sleep to shine while awake.";
+              sleepQualityMessage =
+                  "You're not a machine. Sleep to shine while awake.";
             } else if (lastNightDuration.inHours < 7) {
-              sleepQualityMessage = "The foundation is there. Now level up — even in rest.";
+              sleepQualityMessage =
+                  "The foundation is there. Now level up — even in rest.";
             } else if (lastNightDuration.inHours < 8) {
-              sleepQualityMessage = "Recharged, centered, ready. Rest makes you unstoppable.";
+              sleepQualityMessage =
+                  "Recharged, centered, ready. Rest makes you unstoppable.";
             } else if (lastNightDuration.inHours < 9) {
-              sleepQualityMessage = "When sleep runs deep, dreams turn into plans.";
+              sleepQualityMessage =
+                  "When sleep runs deep, dreams turn into plans.";
             } else {
-              sleepQualityMessage = "Today you chose to heal. Rest is invisible training.";
+              sleepQualityMessage =
+                  "Today you chose to heal. Rest is invisible training.";
             }
           }
 
@@ -315,18 +321,20 @@ class StressLevelCard extends StatelessWidget {
 
     switch (level) {
       case "High":
-        backgroundColor = Colors.deepOrangeAccent.withOpacity(0.15);
-        textColor = Colors.deepOrange.shade700;
+        backgroundColor = const Color(0xFFFFE0E0);
+        textColor = const Color(0xFFB00020);
         icon = Icons.warning_amber_rounded;
         break;
+
       case "Moderate":
-        backgroundColor = Colors.amber.withOpacity(0.15);
-        textColor = Colors.orange.shade800;
+        backgroundColor = const Color(0xFFFFF3D9);
+        textColor = const Color(0xFF996515);
         icon = Icons.error_outline;
         break;
-      default:
-        backgroundColor = Colors.lightGreen.withOpacity(0.15);
-        textColor = Colors.green.shade800;
+
+      default: // Low
+        backgroundColor = const Color(0xFFE4F4EA);
+        textColor = const Color(0xFF2E7D32);
         icon = Icons.check_circle_outline;
     }
 
@@ -347,7 +355,7 @@ class StressLevelCard extends StatelessWidget {
                     'Estimated Stress Level',
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       color: textColor,
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.w900,
                     ),
                   ),
                   const SizedBox(height: 6),
@@ -355,7 +363,7 @@ class StressLevelCard extends StatelessWidget {
                     level.toUpperCase(),
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                       color: textColor,
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w900,
                     ),
                   ),
                 ],
