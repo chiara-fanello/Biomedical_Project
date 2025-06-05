@@ -53,28 +53,30 @@ class _StepPageState extends State<StepPage> {
               message = 'You are a force of nature. Tireless, relentless, alive.';
             }
 
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                StepBox(title: 'Daily steps', steps: daySteps),
-                SizedBox(height: 12),
-                StepBox(title: 'Avg weekly steps', steps: weekSteps),
-                SizedBox(height: 12),
-                StepBox(title: 'Avg monthly steps', steps: monthSteps),
-                SizedBox(height: 24),
-                _InfoBox(
-                  color: Colors.blue.shade50,
-                  borderColor: Colors.blue,
-                  text: message,
-                ),
-                SizedBox(height: 16),
-                _InfoBox(
-                  color: Colors.green.shade50,
-                  borderColor: Colors.green,
-                  text:
-                      'Estimated CO₂ saved by walking today compared to a car travel: \n ${co2Saved.toStringAsFixed(2)} g',
-                ),
-              ],
+            return SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  StepBox(title: 'Daily steps', steps: daySteps),
+                  SizedBox(height: 12),
+                  StepBox(title: 'Avg weekly steps', steps: weekSteps),
+                  SizedBox(height: 12),
+                  StepBox(title: 'Avg monthly steps', steps: monthSteps),
+                  SizedBox(height: 24),
+                  _InfoBox(
+                    color: Colors.blue.shade50,
+                    borderColor: Colors.blue,
+                    text: message,
+                  ),
+                  SizedBox(height: 16),
+                  _InfoBox(
+                    color: Colors.green.shade50,
+                    borderColor: Colors.green,
+                    text:
+                        'Estimated CO₂ saved by walking today compared to a car travel: \n ${co2Saved.toStringAsFixed(2)} g',
+                  ),
+                ],
+              ),
             );
           },
         ),
