@@ -22,5 +22,7 @@ The application's files can be downloaded, but it won't connect on our universit
 
 ## CREDITS
 https://github.com/albegres
+
 https://github.com/chiara-fanello
+
 https://github.com/MerlinLorenzo
