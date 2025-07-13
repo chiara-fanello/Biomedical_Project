@@ -20,10 +20,7 @@ class _StepPageState extends State<StepPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('STEPS'),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text('STEPS'), centerTitle: true),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Consumer<StepDataProvider>(
@@ -40,17 +37,22 @@ class _StepPageState extends State<StepPage> {
 
             String message = '';
             if (daySteps < 3000) {
-              message = 'Your story hasn’t started yet. Get up, move, and make today count.';
+              message =
+                  'Your story hasn’t started yet. Get up, move, and make today count.';
             } else if (daySteps < 5000) {
-              message = 'You’ve taken a few steps. Now keep the fire alive—your best self is waiting';
+              message =
+                  'You’ve taken a few steps. Now keep the fire alive—your best self is waiting';
             } else if (daySteps < 8000) {
-              message = 'Momentum is building. You’re walking toward a stronger you.';
-            } else if(daySteps < 11000){
-              message = 'You’re unstoppable. You’ve moved your body, and your mind followed.';
-            } else if(daySteps < 15000){
+              message =
+                  'Momentum is building. You’re walking toward a stronger you.';
+            } else if (daySteps < 11000) {
+              message =
+                  'You’re unstoppable. You’ve moved your body, and your mind followed.';
+            } else if (daySteps < 15000) {
               message = 'You\'re fierce. Energy, focus, and fire in motion.';
             } else {
-              message = 'You are a force of nature. Tireless, relentless, alive.';
+              message =
+                  'You are a force of nature. Tireless, relentless, alive.';
             }
 
             return SingleChildScrollView(
@@ -103,17 +105,23 @@ class StepBox extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title,
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                  color: Colors.black87)),
+          Text(
+            title,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+              color: Colors.black87,
+            ),
+          ),
           SizedBox(height: 8),
-          Text('$steps',
-              style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black)),
+          Text(
+            '$steps',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.w600,
+              color: Colors.black,
+            ),
+          ),
         ],
       ),
     );
@@ -140,10 +148,7 @@ class _InfoBox extends StatelessWidget {
         color: Colors.green,
         border: Border.all(color: borderColor),
       ),
-      child: Text(
-        text,
-        style: TextStyle(fontSize: 16),
-      ),
+      child: Text(text, style: TextStyle(fontSize: 16)),
     );
   }
 }
